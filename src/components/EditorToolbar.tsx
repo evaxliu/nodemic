@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function EditorToolbar() {
   return (
-    <nav className="flex items-center justify-between h-12 px-4 sm:px-6 border-b border-slate-300 font-mono">
+    <nav className="sticky z-50 top-0 bg-white flex items-center justify-between h-12 px-4 sm:px-6 border-b border-slate-300 font-mono">
       <div className="flex items-baseline gap-3">
         <Link href="/" className="text-base md:text-lg font-semibold tracking-tight text-gray-900">
           Nodemic

@@ -3,7 +3,7 @@ import EditorToolbar from "@/components/EditorToolbar";
 
 export default function Editor() {
   return (
-    <div>
+    <div className="h-dvh flex flex-col">
       <EditorToolbar />
       <Canvas />
     </div>

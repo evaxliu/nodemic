@@ -89,8 +89,8 @@ export default function Canvas() {
   }
 
   return (
-    <div className='flex'>
-      <div style={{ width: '60vw', height: '100vh' }}>
+    <div className='flex flex-1 min-h-0'>
+      <div style={{ width: '60%', height: '100%' }}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -107,7 +107,7 @@ export default function Canvas() {
           <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
         </ReactFlow>
       </div>
-      <div className='flex flex-col grow items-start'>
+      <div className='flex flex-col grow items-start overflow-y-auto'>
         <form onSubmit={createNewNode} className='flex flex-col items-start gap-2 m-5'>
           <div className='flex'>
             <input name="Id" className='border p-2 rounded-2xl' required placeholder='Id' />
