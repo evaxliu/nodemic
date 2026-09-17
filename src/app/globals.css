@@ -2,6 +2,6 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: "IBM Plex Sans", sans-serif;
-  --font-display: "IBM Plex Mono", sans-serif;
+  --font-sans: "IBM Plex Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", sans-serif;
 }

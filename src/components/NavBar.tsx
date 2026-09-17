@@ -2,18 +2,20 @@ import Link from "next/link";
 
 export default function NavBar() {
   return (
-    <nav className="flex justify-between px-10 md:px-30 lg:px-50 py-5">
-      <div>
-        <Link href={"/"} className="text-2xl">Nodemic</Link>
+    <nav className="flex items-center justify-between h-12 px-6 border-b border-slate-300 font-mono">
+      <div className="flex items-baseline gap-3">
+        <Link href="/" className="font-semibold tracking-tight text-gray-900">
+          Nodemic
+        </Link>
+        <span className="text-slate-500">v0.1</span>
       </div>
-      <div className="flex gap-5">
-        <Link href={"/library"}>
-          Model Library
-        </Link>
-        <Link href={"/methods"}>
-          Methods
-        </Link>
-        <Link href={"/model"}>
+      <div className="flex items-center gap-5 text-sm font-medium text-slate-600">
+        <Link href="/library" className="hover:text-cyan-800">Model Library</Link>
+        <Link href="/methods" className="hover:text-cyan-800">Methods</Link>
+        <Link
+          href="/model"
+          className="bg-cyan-800 hover:bg-cyan-900 text-white font-semibold px-3 py-1.5 rounded-xs"
+        >
           Open Editor
         </Link>
       </div>
