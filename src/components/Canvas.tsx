@@ -29,8 +29,12 @@ const edgeTypes = {
 const initialNodes: Node[] = [
   { id: 'n1', position: { x: 0, y: 0 }, data: { label: 'S' } },
   { id: 'n2', position: { x: 0, y: 100 }, data: { label: 'I' } },
+  { id: 'n3', position: { x: 0, y: 200 }, data: { label: 'R' } }
 ];
-const initialEdges: Edge[] = [{ id: 'n1-n2', source: 'n1', target: 'n2', data: { value: "23" }, type: 'custom', }];
+const initialEdges: Edge[] = [
+  { id: 'n1-n2', source: 'n1', target: 'n2', data: { value: "23" }, type: 'custom', },
+  { id: 'n2-n3', source: 'n2', target: 'n3', data: { value: "24" }, type: 'custom', }
+];
 
 export default function Canvas() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
@@ -90,7 +94,7 @@ export default function Canvas() {
 
   return (
     <div className='flex flex-1 min-h-0'>
-      <div style={{ width: '60%', height: '100%' }}>
+      <div style={{ width: '50%', height: '100%' }}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -103,7 +107,6 @@ export default function Canvas() {
           colorMode="dark"
         >
           <Controls />
-          <MiniMap />
           <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
         </ReactFlow>
       </div>
@@ -124,37 +127,35 @@ export default function Canvas() {
           </div>
           <button type="submit" className='select-none cursor-pointer border p-2 rounded-2xl'>Add Compartment</button>
         </form>
-        {/* <button 
-          onClick={() => createNewNode()} 
-          className='select-none cursor-pointer border m-5 p-2 rounded-2xl'
-        >
-          Add Compartment
-        </button> */}
-        <div className='m-5'>
-          {nodes.map((node) => 
-            <div key={node.id} className='border-b p-2'>
-              <p>Id: {node.id}</p>
-              <p>Label: {typeof node.data.label === 'string' ? node.data.label : 'None'}</p>
-              <p>Value: {typeof node.data.value === 'string' ? node.data.value : 'None'}</p>
-            </div>
-          )}
-        </div>
-        <div className='m-5'>
-          {edges.map((edge) => 
-            <div key={edge.id} className='border-b p-2'>
-              <p>Id: {edge.id}</p>
-              <p>Source: {edge.source}</p>
-              <p>Target: {edge.target}</p>
-              <p>Value: {typeof edge.data?.value === 'string' ? edge.data.value : 'None'}</p>
-              Value: 
-              <input
-                name="Value"
-                value={typeof edge.data?.value === 'string' ? edge.data.value : 'None'}
-                className='border-b'
-                onChange={e => onEdgeValueChange(edge.id, e)}
-              />
-            </div>
-          )}
+        <div className='grid grid-cols-2'>
+          <div className='m-5'>
+            <p>Compartments</p>
+            {nodes.map((node) => 
+              <div key={node.id} className='border-b p-2'>
+                <p>Id: {node.id}</p>
+                <p>Label: {typeof node.data.label === 'string' ? node.data.label : 'None'}</p>
+                <p>Value: {typeof node.data.value === 'string' ? node.data.value : 'None'}</p>
+              </div>
+            )}
+          </div>
+          <div className='m-5'>
+            <p>Flow</p>
+            {edges.map((edge) => 
+              <div key={edge.id} className='border-b p-2'>
+                <p>Id: {edge.id}</p>
+                <p>Source: {edge.source}</p>
+                <p>Target: {edge.target}</p>
+                <p>Value: {typeof edge.data?.value === 'string' ? edge.data.value : 'None'}</p>
+                Value: 
+                <input
+                  name="Value"
+                  value={typeof edge.data?.value === 'string' ? edge.data.value : 'None'}
+                  className='border-b'
+                  onChange={e => onEdgeValueChange(edge.id, e)}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
