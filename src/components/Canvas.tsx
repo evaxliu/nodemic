@@ -32,7 +32,7 @@ const initialNodes: Node[] = [
 ];
 const initialEdges: Edge[] = [{ id: 'n1-n2', source: 'n1', target: 'n2', data: { value: "23" }, type: 'custom', }];
 
-export default function Editor() {
+export default function Canvas() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
