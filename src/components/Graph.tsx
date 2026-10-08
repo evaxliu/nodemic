@@ -34,17 +34,17 @@ export default function Graph({nodes, edges} : Props) {
         margin={{
           top: 20,
           right: 20,
-          bottom: 5,
-          left: 0,
+          bottom: 30,
+          left: 30,
         }}
       >
         <CartesianGrid strokeDasharray="5 5" />
         <Line type="monotone" dataKey="s" strokeWidth={2} name="S" stroke='blue' dot={false}/>
         <Line type="monotone" dataKey="i" strokeWidth={2} name="I" stroke='red' dot={false}/>
         <Line type="monotone" dataKey="r" strokeWidth={2} name="R" stroke='green' dot={false}/>
-        <XAxis dataKey="day" />
-        <YAxis width="auto" label={{ value: 'Sick', position: 'insideLeft', angle: -90 }} />
-        <Legend itemSorter={null}/>
+        <XAxis dataKey="day" label={{ value: 'Time (Days)', position: 'bottom' }} />
+        <YAxis width="auto" label={{ value: 'Pop', position: 'insideLeft', angle: -90 }} />
+        <Legend itemSorter={null} position="top"/>
         <Tooltip />
       </LineChart>
     </>
