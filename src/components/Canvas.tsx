@@ -18,6 +18,7 @@ import {
   OnNodesDelete,
 } from '@xyflow/react';
 import CustomEdge from './CustomEdge';
+import Graph from './Graph';
 
 // type InfectiousNode = Node<{ number: number }, 'infectious'>;
 // type NonInfectiousNode = Node<{ number: number }, 'Non-infectious'>;
@@ -111,8 +112,9 @@ export default function Canvas() {
         </ReactFlow>
       </div>
       <div className='flex flex-col grow items-start overflow-y-auto'>
+        <Graph nodes={nodes} edges={edges} />
         <form onSubmit={createNewNode} className='flex flex-col items-start gap-2 m-5'>
-          <div className='flex'>
+          <div className='flex gap-3'>
             <input name="Id" className='border p-2 rounded-2xl' required placeholder='Id' />
             <select name="Label" className='border p-3 rounded-2xl' required>
               <option value="S">S</option>
@@ -120,8 +122,8 @@ export default function Canvas() {
               <option value="R">R</option>
             </select>
             <select name="Infectious" className='border p-3 rounded-2xl' required>
-              <option value="True">True</option>
-              <option value="False">False</option>
+              <option value="True">Infectious</option>
+              <option value="False">Non-Infectious</option>
             </select>
             <input name="Value" className='border p-2 rounded-2xl' required placeholder='Value' />
           </div>
