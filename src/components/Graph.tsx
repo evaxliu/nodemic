@@ -35,10 +35,10 @@ export default function Graph({nodes, edges} : Props) {
           top: 20,
           right: 20,
           bottom: 30,
-          left: 30,
+          left: 20,
         }}
       >
-        <CartesianGrid strokeDasharray="5 5" />
+        <CartesianGrid />
         <Line type="monotone" dataKey="s" strokeWidth={2} name="S" stroke='blue' dot={false}/>
         <Line type="monotone" dataKey="i" strokeWidth={2} name="I" stroke='red' dot={false}/>
         <Line type="monotone" dataKey="r" strokeWidth={2} name="R" stroke='green' dot={false}/>
