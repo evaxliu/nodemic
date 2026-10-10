@@ -22,12 +22,11 @@ interface Props { nodes: Node[], edges: Edge[] }
 
 export default function Graph({nodes, edges} : Props) {
   return (
-    <>
-      <p className='mx-5'>
+    <div className='m-5'>
+      <p className=''>
         Static Sample SIR Model Graph
       </p>
       <LineChart
-        className='m-5'
         style={{ width: '100%', aspectRatio: 1.618, maxWidth: 500 }}
         responsive
         data={data}
@@ -47,6 +46,6 @@ export default function Graph({nodes, edges} : Props) {
         <Legend itemSorter={null} position="top"/>
         <Tooltip />
       </LineChart>
-    </>
+    </div>
   );
 }
