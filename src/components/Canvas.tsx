@@ -123,7 +123,6 @@ export default function Canvas() {
           >
             <p className='select-none px-2 text-gray-400'>Add</p>
             <Button className={toolbarButton} onClick={toggleModal}>+ Component</Button>
-            <Button className={toolbarButton}>+ Flow</Button>
           </Panel>
           <Panel
             position='top-right'
