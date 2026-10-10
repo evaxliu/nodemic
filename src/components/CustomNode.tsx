@@ -14,9 +14,10 @@ export default function CustomNode({ data, isConnectable, selected } : NodeProps
     ? 'border-[#A47DAB]'
     : 'border-[#303238] hover:border-[#7a7d86] in-focus:border-[#5f6470]';
   const badgeColor = badgeColors[data?.symbol] ?? 'bg-gray-300 text-gray-950';
-  // const onChange = useCallback((evt) => {
-  //   console.log(evt.target.value);
-  // }, []);
+  const changeValue = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    console.log(e.currentTarget.value);
+  }, []);
 
   return (
     <div className={`min-w-28 rounded-sm border bg-[#1a1b1e] text-left text-[8px] text-white ${stateClasses}`}>
@@ -31,17 +32,10 @@ export default function CustomNode({ data, isConnectable, selected } : NodeProps
         <p className='font-semibold'>{data?.name}</p>
       </div>
       <div className='flex items-center justify-between gap-3 border-t border-[#303238] px-2 py-1.5'>
-        <p className='font-mono'>{data?.value}</p>
+        <input id="value" name="value" defaultValue={data?.value} className="nodrag" onChange={changeValue}></input>
         <p className='text-gray-400'>{data?.infectious ? "Infectious" : "Non-Infectious"}</p>
       </div>
       <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
     </div>
-    // <div className="text-updater-node">
-      
-    //   <div>
-    //     <label htmlFor="text">Text:</label>
-    //     {/* <input id="text" name="text" onChange={onChange} className="nodrag" /> */}
-    //   </div>
-    // </div>
   );
 }

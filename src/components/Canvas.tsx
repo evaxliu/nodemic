@@ -9,7 +9,6 @@ import {
   Background,
   BackgroundVariant,
   Controls,
-  MiniMap,
   useNodesState,
   useEdgesState,
   getIncomers,
@@ -23,9 +22,8 @@ import CustomEdge from './CustomEdge';
 import Graph from './Graph';
 import { Button } from '@base-ui/react';
 import CustomNode from './CustomNode';
-
-// type InfectiousNode = Node<{ number: number }, 'infectious'>;
-// type NonInfectiousNode = Node<{ number: number }, 'Non-infectious'>;
+import Inspector from './Inspector';
+import NodeCreate from './NodeCreate';
 
 const nodeTypes = {
   'custom': CustomNode
@@ -69,21 +67,6 @@ export default function Canvas() {
     setShowModal(!showModal);
   }
 
-  function createNewNode(e: React.FormEvent<HTMLFormElement>) {
-    // Prevent the browser from reloading the page
-    e.preventDefault();
-
-    // Read the form data
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    const id = String(formData.get("Id") ?? "");
-    const label = formData.get("Label");
-    const value = formData.get("Value");
-    const infectious = formData.get("Infectious");
-    setNodes((nodes) => [...nodes, { id: id, position: { x: 50, y: 50 }, data: { label: id+"_"+label, value: value, infectious: infectious} }]);
-    e.currentTarget.reset();
-  }
-
   const onNodesDelete: OnNodesDelete = useCallback(
     (deleted) => {
       let remainingNodes = [...nodes];
@@ -109,17 +92,13 @@ export default function Canvas() {
         }, edges),
       );
     },
-    [nodes, edges],
+    [nodes, setEdges, edges],
   );
 
   const onConnect: OnConnect = useCallback(
     (connection) => setEdges((eds) => addEdge(connection, eds)),
     [setEdges],
   );
-
-  function onEdgeValueChange(id: string, e: React.ChangeEvent<HTMLInputElement>) {
-    e.preventDefault();
-  }
 
   return (
     <div className='flex flex-1 min-h-0'>
@@ -160,62 +139,8 @@ export default function Canvas() {
       </div>
       <div className='flex flex-col grow items-start overflow-y-auto'>
         <Graph nodes={nodes} edges={edges} />
-        <div className={showModal ? '' : 'hidden'}>
-          <form onSubmit={createNewNode} className='flex flex-col items-start gap-2 m-5'>
-            <div className='flex gap-3'>
-              <input name="Id" className='border p-2 rounded-2xl' required placeholder='Id' />
-              <select name="Label" className='border p-3 rounded-2xl' required>
-                <option value="S">S</option>
-                <option value="I">I</option>
-                <option value="R">R</option>
-              </select>
-              <select name="Infectious" className='border p-3 rounded-2xl' required>
-                <option value="True">Infectious</option>
-                <option value="False">Non-Infectious</option>
-              </select>
-              <input name="Value" className='border p-2 rounded-2xl' required placeholder='Value' />
-            </div>
-            <button type="submit" className='select-none cursor-pointer border p-2 rounded-2xl'>Add Compartment</button>
-          </form>
-        </div>
-        <div className='grid grid-cols-2'>
-          <div className='m-5'>
-            <p>Compartments</p>
-            {nodes.map((node) => 
-              <div key={node.id} className='border-b p-2'>
-                <p>Id: {node.id}</p>
-                <p>Label: {typeof node.data.symbol === 'string' ? node.data.symbol : 'None'}</p>
-                <p>Label: {typeof node.data.name === 'string' ? node.data.name : 'None'}</p>
-                <p>Value: {typeof node.data.value === 'string' ? node.data.value : 'None'}</p>
-                Value: 
-                <input
-                  name="Value"
-                  value={typeof node.data?.value === 'string' ? node.data.value : 'None'}
-                  className='border-b'
-                  onChange={e => onEdgeValueChange(node.id, e)}
-                />
-              </div>
-            )}
-          </div>
-          <div className='m-5'>
-            <p>Flow</p>
-            {edges.map((edge) => 
-              <div key={edge.id} className='border-b p-2'>
-                <p>Id: {edge.id}</p>
-                <p>Source: {edge.source}</p>
-                <p>Target: {edge.target}</p>
-                <p>Value: {typeof edge.data?.value === 'string' ? edge.data.value : 'None'}</p>
-                Value: 
-                <input
-                  name="Value"
-                  value={typeof edge.data?.value === 'string' ? edge.data.value : 'None'}
-                  className='border-b'
-                  onChange={e => onEdgeValueChange(edge.id, e)}
-                />
-              </div>
-            )}
-          </div>
-        </div>
+        <NodeCreate setNodes={setNodes} showModal={showModal} />
+        <Inspector nodes={nodes} edges={edges}/>
       </div>
     </div>
   );
