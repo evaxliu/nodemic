@@ -32,7 +32,7 @@ export default function CustomNode({ data, isConnectable, selected } : NodeProps
         <p className='font-semibold'>{data?.name}</p>
       </div>
       <div className='flex items-center justify-between gap-3 border-t border-[#303238] px-2 py-1.5'>
-        <input id="value" name="value" defaultValue={data?.value} className="nodrag" onChange={changeValue}></input>
+        <input id="node_val" name="value" defaultValue={data?.value} className="nodrag" onChange={changeValue}></input>
         <p className='text-gray-400'>{data?.infectious ? "Infectious" : "Non-Infectious"}</p>
       </div>
       <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
