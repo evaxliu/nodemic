@@ -1,4 +1,4 @@
-import { Edge, Node} from '@xyflow/react';
+import { Edge, Node } from '@xyflow/react';
 
 type InspectorProps = { nodes: Node[], edges: Edge[] }
 
