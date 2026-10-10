@@ -1,55 +1,35 @@
-import { Edge, Node } from '@xyflow/react';
-import { useCallback } from 'react';
+import { Edge, Node} from '@xyflow/react';
 
-type InspectorProps = {nodes: Node[], edges: Edge[]}
+type InspectorProps = { nodes: Node[], edges: Edge[] }
 
 export default function Inspector({nodes, edges} : InspectorProps) {
-
-  const changeEdgeValue = useCallback((id: string, e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    console.log(e.currentTarget.value);
-  }, []);
-
-  const changeNodeValue = useCallback((id: string, e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    console.log(e.currentTarget.value);
-  }, []);
+  const idToName = new Map<string, string>;
+  for (const node of nodes) {
+    idToName.set(node.id, typeof node.data.name === 'string' ? node.data.name : 'None')
+  }
 
   return (
-    <div>
-      Inspector
-      <div className='grid grid-cols-2'>
-          <div className='m-5'>
-            <p>Compartments</p>
+    <div className='p-4 text-gray-900 m-5 border-t'>
+      <div className='mt-3 grid grid-cols-2 gap-6 text-gray-700'>
+          <div className='flex flex-col gap-2'>
+            <p className='text-gray-500'>Compartments</p>
             {nodes.map((node) => 
-              <div key={node.id} className='border-b p-2'>
-                <p>Id: {node.id}</p>
+              <div key={node.id} className={`space-y-1 rounded-md px-3 py-2 ${node.data.infectious ? 'bg-red-50' : 'bg-emerald-50'}`}>
+                <p className='text-gray-400'>Id: {node.id}</p>
+                <p className={node.data.infectious ? 'text-red-700' : 'text-emerald-700'}>Type: {typeof node.data.infectious === 'boolean' ? (node.data.infectious ? 'Infectious' : 'Non-infectious') : 'None' }</p>
                 <p>Symbol: {typeof node.data.symbol === 'string' ? node.data.symbol : 'None'}</p>
                 <p>Name: {typeof node.data.name === 'string' ? node.data.name : 'None'}</p>
-                <label htmlFor="text">Value:</label>
-                <input
-                  name="node_val"
-                  defaultValue={typeof node.data?.value === 'string' ? node.data.value : 'None'}
-                  className='border-b px-1'
-                  onChange={e => changeNodeValue(node.id, e)}
-                />
+                <p>Value: {typeof node.data.value === 'string' ? node.data.value : 'None'}</p>
               </div>
             )}
           </div>
-          <div className='m-5'>
-            <p>Flow</p>
+          <div className='flex flex-col gap-2'>
+            <p className='text-gray-500'>Flows</p>
             {edges.map((edge) => 
-              <div key={edge.id} className='border-b p-2'>
-                <p>Id: {edge.id}</p>
-                <p>Source: {edge.source}</p>
-                <p>Target: {edge.target}</p>
-                <label htmlFor="text">Value:</label>
-                <input
-                  name="edge_val"
-                  defaultValue={typeof edge.data?.value === 'string' ? edge.data.value : 'None'}
-                  className='border-b px-1'
-                  onChange={e => changeEdgeValue(edge.id, e)}
-                />
+              <div key={edge.id} className='space-y-1 rounded-md bg-gray-50 px-3 py-2'>
+                <p className='text-gray-400'>Id: {edge.id}</p>
+                <p>Flow: {idToName.get(edge.source)} → {idToName.get(edge.target)}</p>
+                <p>Value: {typeof edge.data?.value === 'string' ? edge.data.value : 'None'}</p>
               </div>
             )}
           </div>
