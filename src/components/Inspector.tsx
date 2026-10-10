@@ -1,12 +1,19 @@
 import { Edge, Node } from '@xyflow/react';
+import { useCallback } from 'react';
 
 type InspectorProps = {nodes: Node[], edges: Edge[]}
 
 export default function Inspector({nodes, edges} : InspectorProps) {
 
-  function onEdgeValueChange(id: string, e: React.ChangeEvent<HTMLInputElement>) {
+  const changeEdgeValue = useCallback((id: string, e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-  }
+    console.log(e.currentTarget.value);
+  }, []);
+
+  const changeNodeValue = useCallback((id: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    console.log(e.currentTarget.value);
+  }, []);
 
   return (
     <div>
@@ -21,10 +28,10 @@ export default function Inspector({nodes, edges} : InspectorProps) {
                 <p>Name: {typeof node.data.name === 'string' ? node.data.name : 'None'}</p>
                 <label htmlFor="text">Value:</label>
                 <input
-                  name="Value"
-                  value={typeof node.data?.value === 'string' ? node.data.value : 'None'}
+                  name="node_val"
+                  defaultValue={typeof node.data?.value === 'string' ? node.data.value : 'None'}
                   className='border-b px-1'
-                  onChange={e => onEdgeValueChange(node.id, e)}
+                  onChange={e => changeNodeValue(node.id, e)}
                 />
               </div>
             )}
@@ -38,10 +45,10 @@ export default function Inspector({nodes, edges} : InspectorProps) {
                 <p>Target: {edge.target}</p>
                 <label htmlFor="text">Value:</label>
                 <input
-                  name="Value"
-                  value={typeof edge.data?.value === 'string' ? edge.data.value : 'None'}
+                  name="edge_val"
+                  defaultValue={typeof edge.data?.value === 'string' ? edge.data.value : 'None'}
                   className='border-b px-1'
-                  onChange={e => onEdgeValueChange(edge.id, e)}
+                  onChange={e => changeEdgeValue(edge.id, e)}
                 />
               </div>
             )}
