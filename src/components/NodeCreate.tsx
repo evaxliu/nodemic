@@ -17,7 +17,7 @@ export default function NodeCreate({ setNodes, showModal } : NodeCreateProps) {
     const symbol = formData.get("Symbol");
     const value = formData.get("Value");
     const infectious = formData.get("Infectious");
-    setNodes((nodes) => [...nodes, { id: uuidv4(), position: { x: 50, y: 50 }, data: { name: name, symbol: symbol, value: value, infectious: infectious }, type: "custom" }]);
+    setNodes((nodes) => [...nodes, { id: uuidv4(), position: { x: 50, y: 50 }, data: { name: name, symbol: symbol, value: value, infectious: infectious }, type: "custom-node" }]);
     e.currentTarget.reset();
   }
 

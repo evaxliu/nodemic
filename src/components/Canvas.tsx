@@ -26,27 +26,27 @@ import Inspector from './Inspector';
 import NodeCreate from './NodeCreate';
 
 const nodeTypes = {
-  'custom': CustomNode
+  'custom-node': CustomNode
 }
 
 const edgeTypes = {
-  'custom': CustomEdge,
+  'custom-edge': CustomEdge,
 };
 
 const initialNodes: Node[] = [
-  { id: 'n1', position: { x: 0, y: 0 }, data: { name: 'Susceptible', symbol: "S", value: "99,995", infectious: false }, type: 'custom' },
-  { id: 'n2', position: { x: 0, y: 120 }, data: { name: 'Infected', symbol: "I", value: "5", infectious: true }, type: 'custom' },
-  { id: 'n3', position: { x: 0, y: 240 }, data: { name: 'Recovered', symbol: "R", value: "0", infectious: false }, type: 'custom' }
+  { id: 'n1', position: { x: 0, y: 0 }, data: { name: 'Susceptible', symbol: "S", value: "99,995", infectious: false }, type: 'custom-node' },
+  { id: 'n2', position: { x: 0, y: 120 }, data: { name: 'Infected', symbol: "I", value: "5", infectious: true }, type: 'custom-node' },
+  { id: 'n3', position: { x: 0, y: 240 }, data: { name: 'Recovered', symbol: "R", value: "0", infectious: false }, type: 'custom-node' }
 ];
 const initialEdges: Edge[] = [
-  { id: 'n1-n2', source: 'n1', target: 'n2', data: { value: "23" }, type: 'custom', 
+  { id: 'n1-n2', source: 'n1', target: 'n2', data: { value: "23" }, type: 'custom-edge', 
     markerEnd: {
       type: MarkerType.ArrowClosed,
       width: 20,
       height: 20,
     },
   },
-  { id: 'n2-n3', source: 'n2', target: 'n3', data: { value: "24" }, type: 'custom', 
+  { id: 'n2-n3', source: 'n2', target: 'n3', data: { value: "24" }, type: 'custom-edge', 
     markerEnd: {
       type: MarkerType.ArrowClosed,
       width: 20,
@@ -108,6 +108,7 @@ export default function Canvas() {
           edges={edges}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
+          defaultEdgeOptions={{ type: 'custom-edge' }}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onNodesDelete={onNodesDelete}
