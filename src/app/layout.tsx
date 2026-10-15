@@ -4,6 +4,18 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Nodemic",
   description: "A visual editor for compartmental epidemic models.",
+  icons: {
+    icon: [
+      {
+        url: "/nodemic-icon-transparent/nodemic-transparent-dark-512.png",
+      },
+      {
+        url: "/nodemic-icon-transparent/nodemic-transparent-dark-512.png",
+        sizes: "48x48",
+        type: "image/png",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
