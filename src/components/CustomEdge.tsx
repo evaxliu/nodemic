@@ -1,7 +1,6 @@
-import { BaseEdge, type EdgeProps, type Edge, EdgeText, getBezierPath } from '@xyflow/react';
-import { useCallback } from 'react';
+import { BaseEdge, type EdgeProps, type Edge, getBezierPath, useReactFlow, EdgeLabelRenderer } from '@xyflow/react';
  
-type CustomEdge = Edge<{ value: string }, 'custom'>;
+type CustomEdge = Edge<{ value: string }, 'custom-edge'>;
  
 export default function CustomEdge({
   id,
@@ -15,10 +14,11 @@ export default function CustomEdge({
 }: EdgeProps<CustomEdge>) {
   const [edgePath, labelX, labelY] = getBezierPath({ sourceX, sourceY, targetX, targetY });
   const activeMarkerEnd = selected ? 'url(#selected-marker)' : markerEnd;
-  const changeValue = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    console.log(e.currentTarget.value);
-  }, []);
+
+  const reactFlow = useReactFlow();
+  const handleValueChange = (id: string, e: string) => {
+    reactFlow.updateEdgeData(id, { value: e })
+  }
 
   return (
     <>
@@ -39,8 +39,8 @@ export default function CustomEdge({
               className="arrowclosed"
               style={{
                 strokeWidth: 1,
-                stroke: '#FFCC00',
-                fill: '#FFCC00',
+                stroke: '#A47DAB',
+                fill: '#A47DAB',
               }}
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -49,12 +49,26 @@ export default function CustomEdge({
           </marker>
         </defs>
       </svg>
-      <BaseEdge id={id} path={edgePath} markerEnd={activeMarkerEnd} label={data?.value} />
-      <EdgeText x={labelX} y={labelY} label={data?.value} />
-      <div className='flex items-center justify-between gap-3 border-t border-[#303238] px-2 py-1.5'>
-        <input id="node_val" name="value" defaultValue={data?.value} className="nodrag" onChange={changeValue}></input>
-      </div>
-      <input id="node_val" name="value" defaultValue={data?.value} className="nodrag" onChange={changeValue}></input>
+      <BaseEdge id={id} path={edgePath} markerEnd={activeMarkerEnd} />
+      <EdgeLabelRenderer>
+        <div
+          style={{
+            position: 'absolute',
+            transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
+            pointerEvents: 'all',
+          }}
+          className="edge-label-renderer__custom-edge nodrag nopan"
+        >
+          <input
+            name="value"
+            defaultValue={data?.value}
+            className={`nodrag w-14 rounded-md border bg-[#1b1d22] px-2 py-1 text-center text-xs text-white outline-none focus:border-[#A47DAB] ${
+              selected ? 'border-[#A47DAB]' : 'border-[#303238]'
+            }`}
+            onChange={(e) => handleValueChange(id, e.target.value)}
+          />
+        </div>
+      </EdgeLabelRenderer>
     </>
   );
 }

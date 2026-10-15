@@ -2,7 +2,7 @@ import { Handle, Node, NodeProps, Position, useReactFlow } from '@xyflow/react';
 
 type CustomNode = Node<{
   name: string, symbol: string, value: number, infectious: boolean 
-}, 'custom'>;
+}, 'custom-node'>;
 
 const badgeColors: Record<string, string> = {
   S: 'bg-blue-300 text-blue-950',
