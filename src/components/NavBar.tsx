@@ -10,7 +10,7 @@ export default function NavBar() {
         <span className="hidden sm:inline text-xs md:text-sm text-slate-500">v0.1</span>
       </div>
       <div className="flex items-center gap-4 sm:gap-5 text-sm md:text-base font-medium text-slate-600">
-        <Link href="/library" className="hover:text-cyan-800">Model Library</Link>
+        {/* <Link href="/library" className="hover:text-cyan-800">Model Library</Link> */}
         <Link href="/methods" className="hover:text-cyan-800">Methods</Link>
         <Link
           href="/model"
