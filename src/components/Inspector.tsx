@@ -29,6 +29,7 @@ export default function Inspector({nodes, edges} : InspectorProps) {
               <div key={edge.id} className='space-y-1 rounded-md bg-gray-50 px-3 py-2'>
                 <p className='text-gray-400'>Id: {edge.id}</p>
                 <p>Flow: {idToName.get(edge.source)} → {idToName.get(edge.target)}</p>
+                <p>Kind: {typeof edge.data?.kind === 'string' ? edge.data.kind : 'None'}</p>
                 <p>Value: {typeof edge.data?.value === 'string' ? edge.data.value : 'None'}</p>
               </div>
             )}

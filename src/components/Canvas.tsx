@@ -24,6 +24,7 @@ import { Button } from '@base-ui/react';
 import CustomNode from './CustomNode';
 import Inspector from './Inspector';
 import NodeCreate from './NodeCreate';
+import { v4 as uuidv4 } from 'uuid';
 
 const nodeTypes = {
   'custom-node': CustomNode
@@ -39,14 +40,14 @@ const initialNodes: Node[] = [
   { id: 'n3', position: { x: 0, y: 240 }, data: { name: 'Recovered', symbol: "R", value: "0", infectious: false }, type: 'custom-node' }
 ];
 const initialEdges: Edge[] = [
-  { id: 'n1-n2', source: 'n1', target: 'n2', data: { value: "23" }, type: 'custom-edge', 
+  { id: 'n1-n2', source: 'n1', target: 'n2', data: { value: "23", kind: "Infection" }, type: 'custom-edge', 
     markerEnd: {
       type: MarkerType.ArrowClosed,
       width: 20,
       height: 20,
     },
   },
-  { id: 'n2-n3', source: 'n2', target: 'n3', data: { value: "24" }, type: 'custom-edge', 
+  { id: 'n2-n3', source: 'n2', target: 'n3', data: { value: "24", kind: "Simple" }, type: 'custom-edge', 
     markerEnd: {
       type: MarkerType.ArrowClosed,
       width: 20,
@@ -96,7 +97,17 @@ export default function Canvas() {
   );
 
   const onConnect: OnConnect = useCallback(
-    (connection) => setEdges((eds) => addEdge(connection, eds)),
+    (connection) => {
+      const newEdge = { id: uuidv4(), source: connection.source, target: connection.target, data: { value: "0", kind: "Infection" }, type: 'custom-edge', 
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          width: 20,
+          height: 20,
+        },
+      }
+      setEdges((eds) => addEdge(connection, eds))
+      setNodes((nodes) => [...nodes, { id: uuidv4(), position: { x: 50, y: 50 }, data: { name: name, symbol: symbol, value: value, infectious: infectious }, type: "custom-node" }]);
+    },
     [setEdges],
   );
 
