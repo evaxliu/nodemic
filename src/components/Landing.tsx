@@ -15,7 +15,7 @@ export default function Landing() {
         </p>
         <Link
           href="/model"
-          className="bg-cyan-800 hover:bg-cyan-900 text-white font-semibold px-3 py-1.5 rounded-xs"
+          className="bg-cyan-800 hover:bg-cyan-900 text-white px-3 py-1.5 rounded-xs"
         >
           Open Editor
         </Link>
