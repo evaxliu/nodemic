@@ -35,7 +35,15 @@ export default function NodeCreate({ setNodes, showModal } : NodeCreateProps) {
             <option value="True">Infectious</option>
             <option value="False">Non-Infectious</option>
           </select>
-          <input name="Value" className='h-10 w-24 rounded-md border border-gray-300 px-3 text-gray-900 outline-none placeholder:text-gray-400 focus:border-gray-500' type="number" min="0" required placeholder='Value' />
+          <input 
+            name="Value"
+            className='h-10 w-24 rounded-md border border-gray-300 px-3 text-gray-900 outline-none placeholder:text-gray-400 focus:border-gray-500'
+            type="number"
+            min="0"
+            step="any"
+            required
+            placeholder='Value'
+          />
         </div>
         <button type="submit" className='h-10 cursor-pointer select-none rounded-md bg-gray-900 px-4 text-white hover:bg-gray-700'>Add</button>
       </form>

@@ -16,7 +16,7 @@ export default function CustomEdge({
   const activeMarkerEnd = selected ? 'url(#selected-marker)' : markerEnd;
 
   const reactFlow = useReactFlow();
-  const handleValueChange = (id: string, e: string) => {
+  const handleValueChange = (id: string, e: number) => {
     reactFlow.updateEdgeData(id, { value: e })
   }
 
@@ -65,7 +65,10 @@ export default function CustomEdge({
             className={`nodrag w-14 rounded-md border bg-[#1b1d22] px-2 py-1 text-center text-xs text-white outline-none focus:border-[#A47DAB] ${
               selected ? 'border-[#A47DAB]' : 'border-[#303238]'
             }`}
-            onChange={(e) => handleValueChange(id, e.target.value)}
+            type="number"
+            min="0"
+            step="any"
+            onChange={(e) => handleValueChange(id, Number(e.target.value))}
           />
         </div>
       </EdgeLabelRenderer>

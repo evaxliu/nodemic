@@ -35,7 +35,15 @@ export default function CustomNode({ data, isConnectable, selected, id } : NodeP
         <p className='font-semibold'>{data.name}</p>
       </div>
       <div className='flex items-center justify-between border-t border-[#303238] px-2 py-1.5'>
-        <input name="value" defaultValue={data.value} className="nodrag" onChange={(e) => handleValueChange(id, e.target.value)}></input>
+        <input 
+          name="value"
+          defaultValue={data.value}
+          className="nodrag"
+          type="number"
+          min="0"
+          step="any"
+          onChange={(e) => handleValueChange(id, e.target.value)}
+        />
         <p className='text-gray-400'>{data.infectious ? "Infectious" : "Non-Infectious"}</p>
       </div>
       <Handle type="source" position={Position.Bottom} isConnectable={isConnectable} />
