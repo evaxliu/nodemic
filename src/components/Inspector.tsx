@@ -7,7 +7,7 @@ type InspectorProps = { nodes: CompartmentNode[], edges: FlowEdge[], days: numbe
 export default function Inspector({nodes, edges, days, setDays} : InspectorProps) {
   const idToName = new Map<string, string>;
   for (const node of nodes) {
-    idToName.set(node.id, typeof node.data.name === 'string' ? node.data.name : 'None')
+    idToName.set(node.id, node.data.name)
   }
 
   return (
