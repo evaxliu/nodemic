@@ -18,7 +18,7 @@ export default function CustomNode({ data, isConnectable, selected, id } : NodeP
   const badgeColor = badgeColors[data?.symbol] ?? 'bg-gray-300 text-gray-950';
 
   const reactFlow = useReactFlow();
-  const handleValueChange = (id: string, e: string) => {
+  const handleValueChange = (id: string, e: number) => {
     reactFlow.updateNodeData(id, { value: e })
   }
 
@@ -42,7 +42,7 @@ export default function CustomNode({ data, isConnectable, selected, id } : NodeP
           type="number"
           min="0"
           step="any"
-          onChange={(e) => handleValueChange(id, e.target.value)}
+          onChange={(e) => handleValueChange(id, Number(e.target.value))}
         />
         <p className='text-gray-400'>{data.infectious ? "Infectious" : "Non-Infectious"}</p>
       </div>
