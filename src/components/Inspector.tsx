@@ -1,8 +1,11 @@
 import { Edge, Node } from '@xyflow/react';
+import { Dispatch, SetStateAction } from 'react';
+import { type CompartmentNode } from './CustomNode';
+import { type FlowEdge } from './CustomEdge';
 
-type InspectorProps = { nodes: Node[], edges: Edge[] }
+type InspectorProps = { nodes: CompartmentNode[], edges: FlowEdge[], days: number, setDays: Dispatch<SetStateAction<number>> }
 
-export default function Inspector({nodes, edges} : InspectorProps) {
+export default function Inspector({nodes, edges, days, setDays} : InspectorProps) {
   const idToName = new Map<string, string>;
   for (const node of nodes) {
     idToName.set(node.id, typeof node.data.name === 'string' ? node.data.name : 'None')
@@ -16,10 +19,10 @@ export default function Inspector({nodes, edges} : InspectorProps) {
             {nodes.map((node) => 
               <div key={node.id} className={`space-y-1 rounded-md px-3 py-2 ${node.data.infectious ? 'bg-red-50' : 'bg-emerald-50'}`}>
                 <p className='text-gray-400'>Id: {node.id}</p>
-                <p className={node.data.infectious ? 'text-red-700' : 'text-emerald-700'}>Type: {typeof node.data.infectious === 'boolean' ? (node.data.infectious ? 'Infectious' : 'Non-infectious') : 'None' }</p>
-                <p>Symbol: {typeof node.data.symbol === 'string' ? node.data.symbol : 'None'}</p>
-                <p>Name: {typeof node.data.name === 'string' ? node.data.name : 'None'}</p>
-                <p>Value: {typeof node.data.value === 'string' ? node.data.value : 'None'}</p>
+                <p className={node.data.infectious ? 'text-red-700' : 'text-emerald-700'}>Type: {(node.data.infectious ? 'Infectious' : 'Non-infectious')}</p>
+                <p>Symbol: {node.data.symbol}</p>
+                <p>Name: {node.data.name}</p>
+                <p>Value: {node.data.value}</p>
               </div>
             )}
           </div>
@@ -29,7 +32,7 @@ export default function Inspector({nodes, edges} : InspectorProps) {
               <div key={edge.id} className='space-y-1 rounded-md bg-gray-50 px-3 py-2'>
                 <p className='text-gray-400'>Id: {edge.id}</p>
                 <p>Flow: {idToName.get(edge.source)} → {idToName.get(edge.target)}</p>
-                <p>Value: {typeof edge.data?.value === 'string' ? edge.data.value : 'None'}</p>
+                <p>Value: {edge.data?.value}</p>
               </div>
             )}
           </div>

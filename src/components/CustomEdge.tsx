@@ -1,6 +1,6 @@
 import { BaseEdge, type EdgeProps, type Edge, getBezierPath, useReactFlow, EdgeLabelRenderer } from '@xyflow/react';
  
-type CustomEdge = Edge<{ value: string }, 'custom-edge'>;
+export type FlowEdge = Edge<{ value: number }, 'custom-edge'>;
  
 export default function CustomEdge({
   id,
@@ -11,7 +11,7 @@ export default function CustomEdge({
   data,
   selected,
   markerEnd
-}: EdgeProps<CustomEdge>) {
+}: EdgeProps<FlowEdge>) {
   const [edgePath, labelX, labelY] = getBezierPath({ sourceX, sourceY, targetX, targetY });
   const activeMarkerEnd = selected ? 'url(#selected-marker)' : markerEnd;
 

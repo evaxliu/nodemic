@@ -1,10 +1,8 @@
 "use client"
-import {
-  type Node,
-  type Edge,
-} from '@xyflow/react';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
+import { type CompartmentNode } from './CustomNode';
+import { type FlowEdge } from './CustomEdge';
 
 const data = [
   { day: 0, s: 600, i: 1, r: 1 },
@@ -18,9 +16,22 @@ const data = [
 
 // Data will be in the form of JSON
 
-interface Props { nodes: Node[], edges: Edge[] }
+interface Props { nodes: CompartmentNode[], edges: FlowEdge[], days: number }
 
-export default function Graph({nodes, edges} : Props) {
+export default function Graph({nodes, edges, days} : Props) {
+  const dt = 0.1
+  const d = days
+  const cachedValue = useMemo(() => {
+    const data: number[] = []
+    for (let i = 0; i < nodes.length; i++) {
+      console.log(nodes[i])
+      if (typeof nodes[i].data.value === 'number') {
+        data.push(nodes[i].data.value)
+      }
+    }
+    return data
+  }, [nodes, edges])
+    
   return (
     <>
       <p className='m-5'>

@@ -1,6 +1,6 @@
 import { Handle, Node, NodeProps, Position, useReactFlow } from '@xyflow/react';
 
-type CustomNode = Node<{
+export type CompartmentNode = Node<{
   name: string, symbol: string, value: number, infectious: boolean 
 }, 'custom-node'>;
 
@@ -10,7 +10,7 @@ const badgeColors: Record<string, string> = {
   R: 'bg-emerald-300 text-emerald-950',
 };
 
-export default function CustomNode({ data, isConnectable, selected, id } : NodeProps<CustomNode>) {
+export default function CustomNode({ data, isConnectable, selected, id } : NodeProps<CompartmentNode>) {
   const stateClasses = selected
     ? 'border-[#A47DAB]'
     : 'border-[#303238] hover:border-[#7a7d86] in-focus:border-[#5f6470]';

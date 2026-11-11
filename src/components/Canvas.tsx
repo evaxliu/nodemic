@@ -3,8 +3,6 @@ import { useState, useCallback } from 'react';
 import {
   ReactFlow,
   addEdge,
-  type Node,
-  type Edge,
   type OnConnect,
   Background,
   BackgroundVariant,
@@ -18,10 +16,10 @@ import {
   MarkerType,
   Panel,
 } from '@xyflow/react';
-import CustomEdge from './CustomEdge';
+import CustomEdge, { type FlowEdge } from './CustomEdge';
 import Graph from './Graph';
 import { Button } from '@base-ui/react';
-import CustomNode from './CustomNode';
+import CustomNode, { type CompartmentNode } from './CustomNode';
 import Inspector from './Inspector';
 import NodeCreate from './NodeCreate';
 
@@ -33,20 +31,20 @@ const edgeTypes = {
   'custom-edge': CustomEdge,
 };
 
-const initialNodes: Node[] = [
-  { id: 'n1', position: { x: 0, y: 0 }, data: { name: 'Susceptible', symbol: "S", value: "99,995", infectious: false }, type: 'custom-node' },
-  { id: 'n2', position: { x: 0, y: 120 }, data: { name: 'Infected', symbol: "I", value: "5", infectious: true }, type: 'custom-node' },
-  { id: 'n3', position: { x: 0, y: 240 }, data: { name: 'Recovered', symbol: "R", value: "0", infectious: false }, type: 'custom-node' }
+const initialNodes: CompartmentNode[] = [
+  { id: 'n1', position: { x: 0, y: 0 }, data: { name: 'Susceptible', symbol: "S", value: 99995, infectious: false }, type: 'custom-node' },
+  { id: 'n2', position: { x: 0, y: 120 }, data: { name: 'Infected', symbol: "I", value: 5, infectious: true }, type: 'custom-node' },
+  { id: 'n3', position: { x: 0, y: 240 }, data: { name: 'Recovered', symbol: "R", value: 0, infectious: false }, type: 'custom-node' }
 ];
-const initialEdges: Edge[] = [
-  { id: 'n1-n2', source: 'n1', target: 'n2', data: { value: "23" }, type: 'custom-edge', 
+const initialEdges: FlowEdge[] = [
+  { id: 'n1-n2', source: 'n1', target: 'n2', data: { value: 0.3 }, type: 'custom-edge', 
     markerEnd: {
       type: MarkerType.ArrowClosed,
       width: 20,
       height: 20,
     },
   },
-  { id: 'n2-n3', source: 'n2', target: 'n3', data: { value: "24" }, type: 'custom-edge', 
+  { id: 'n2-n3', source: 'n2', target: 'n3', data: { value: 0.1 }, type: 'custom-edge', 
     markerEnd: {
       type: MarkerType.ArrowClosed,
       width: 20,
@@ -61,6 +59,7 @@ const toolbarButton =
 export default function Canvas() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [days, setDays] = useState(160);
   const [showModal, setShowModal] = useState<boolean>(false);
 
   function toggleModal() {
@@ -138,9 +137,9 @@ export default function Canvas() {
         </ReactFlow>
       </div>
       <div className='flex flex-col grow items-start overflow-y-auto'>
-        <Graph nodes={nodes} edges={edges} />
+        <Graph nodes={nodes} edges={edges} days={days} />
         <NodeCreate setNodes={setNodes} showModal={showModal} />
-        <Inspector nodes={nodes} edges={edges}/>
+        <Inspector nodes={nodes} edges={edges} days={days} setDays={setDays} />
       </div>
     </div>
   );
