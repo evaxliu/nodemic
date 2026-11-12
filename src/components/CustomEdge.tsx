@@ -1,7 +1,7 @@
 import { BaseEdge, type EdgeProps, type Edge, getBezierPath, useReactFlow, EdgeLabelRenderer } from '@xyflow/react';
 
 // Initialize data types stored in edge
-export type FlowEdge = Edge<{ value: number }, 'custom-edge'>;
+export type FlowEdge = Edge<{ value: number, kind: 'Infection' | 'Simple' }, 'custom-edge'>;
  
 export default function CustomEdge({ id, sourceX, sourceY, targetX, targetY, data, selected, markerEnd }: EdgeProps<FlowEdge>) {
   // Create arrow style
@@ -10,12 +10,19 @@ export default function CustomEdge({ id, sourceX, sourceY, targetX, targetY, dat
   // Visual indication if arrow selected
   const activeMarkerEnd = selected ? 'url(#selected-marker)' : markerEnd;
 
+  // Boolean if flow infection
+  const isInfection = data?.kind === 'Infection';
+
   // Init hook to handle changes to edge
   const reactFlow = useReactFlow();
 
   // Handle edge value change
   const handleValueChange = (id: string, e: number) => {
     reactFlow.updateEdgeData(id, { value: e })
+  }
+
+  const handleKindChange = (id: string, e: 'Infection' | 'Simple') => {
+    reactFlow.updateEdgeData(id, { kind: e })
   }
 
   return (
@@ -57,17 +64,31 @@ export default function CustomEdge({ id, sourceX, sourceY, targetX, targetY, dat
           }}
           className="edge-label-renderer__custom-edge nodrag nopan"
         >
-          <input
-            name="value"
-            defaultValue={data?.value}
-            className={`nodrag w-14 rounded-md border bg-[#1b1d22] px-2 py-1 text-center text-xs text-white outline-none focus:border-[#A47DAB] ${
+          <div
+            className={`flex items-center overflow-hidden rounded-md border bg-[#1b1d22] text-xs ${
               selected ? 'border-[#A47DAB]' : 'border-[#303238]'
             }`}
-            type="number"
-            min="0"
-            step="any"
-            onChange={(e) => handleValueChange(id, Number(e.target.value))}
-          />
+          >
+            <input
+              name="value"
+              defaultValue={data?.value}
+              className="nodrag w-12 bg-transparent px-2 py-1 text-center text-white outline-none"
+              type="number"
+              min="0"
+              step="any"
+              onChange={(e) => handleValueChange(id, Number(e.target.value))}
+            />
+            <button
+              type="button"
+              title={isInfection ? 'Infection flow (click for simple)' : 'Simple flow (click for infection)'}
+              className={`nodrag border-l border-[#303238] px-1.5 py-1 font-mono font-semibold ${
+                isInfection ? 'bg-red-300 text-red-950' : 'text-gray-400'
+              }`}
+              onClick={() => handleKindChange(id, isInfection ? 'Simple' : 'Infection')}
+            >
+              {isInfection ? 'INF' : 'SIM'}
+            </button>
+          </div>
         </div>
       </EdgeLabelRenderer>
     </>

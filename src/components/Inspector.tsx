@@ -34,6 +34,7 @@ export default function Inspector({nodes, edges, days, setDays} : InspectorProps
               <div key={edge.id} className='space-y-1 rounded-md bg-gray-50 px-3 py-2'>
                 <p className='text-gray-400'>Id: {edge.id}</p>
                 <p>Flow: {idToName[edge.source]} → {idToName[edge.target]}</p>
+                <p>Kind: {edge.data?.kind}</p>
                 <p>Value: {edge.data?.value}</p>
               </div>
             )}

@@ -22,6 +22,7 @@ import { Button } from '@base-ui/react';
 import CustomNode, { type CompartmentNode } from './CustomNode';
 import Inspector from './Inspector';
 import NodeCreate from './NodeCreate';
+import { v4 as uuidv4 } from 'uuid';
 
 // Import custom node type for compartment handling
 const nodeTypes = {
@@ -42,14 +43,14 @@ const initialNodes: CompartmentNode[] = [
 
 // Initialize Flows
 const initialEdges: FlowEdge[] = [
-  { id: 'n1-n2', source: 'n1', target: 'n2', data: { value: 0.3 }, type: 'custom-edge', 
+  { id: 'n1-n2', source: 'n1', target: 'n2', data: { value: 0.3, kind: "Infection" }, type: 'custom-edge', 
     markerEnd: {
       type: MarkerType.ArrowClosed,
       width: 20,
       height: 20,
     },
   },
-  { id: 'n2-n3', source: 'n2', target: 'n3', data: { value: 0.1 }, type: 'custom-edge', 
+  { id: 'n2-n3', source: 'n2', target: 'n3', data: { value: 0.1, kind: "Simple" }, type: 'custom-edge', 
     markerEnd: {
       type: MarkerType.ArrowClosed,
       width: 20,
@@ -110,8 +111,23 @@ export default function Canvas() {
 
   // Handle flow connection - copied from ReactFlow example
   const onConnect: OnConnect = useCallback(
-    (connection) => setEdges((eds) => addEdge(connection, eds)),
-    [setEdges],
+    (connection) => {
+
+      const sNodeInfectious = nodes.find((n) => n.id === connection.source)?.data.infectious
+      const tNodeInfectious = nodes.find((n) => n.id === connection.target)?.data.infectious
+      const isInfection = !sNodeInfectious && tNodeInfectious
+
+      const newEdge: FlowEdge = { id: uuidv4(), source: connection.source, target: connection.target, data: { value: 0, kind: isInfection ? "Infection" : "Simple" }, type: 'custom-edge', 
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          width: 20,
+          height: 20,
+        },
+      }
+
+      setEdges((eds) => addEdge(newEdge, eds))
+    },
+    [nodes, setEdges],
   );
 
   return (
