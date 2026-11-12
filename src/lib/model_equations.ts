@@ -53,9 +53,6 @@ export function calculate(compiled: calculateProps) {
     const day = (step + 1) * compiled.dt
     console.log(day)
 
-    // Data row
-    const row: Record<string, number> = { day: day }
-
     // Changes to each compartment value
     // Changes subtract from source, add to target
     const change = Array<number>(cVals.length).fill(0);
@@ -90,15 +87,20 @@ export function calculate(compiled: calculateProps) {
       cVals[i] += change[i]
     }
 
-    // Compartment id -> new compartment value
-    // Add to row to push to data for graphing
-    for (const k in cIdToIdx) {
-      const idx = cIdToIdx[k]
-      row[cIdSym[k]] = cVals[idx]
-      console.log(cIdSym[k])
-    }
+    // Only add data for full days, not partial days
+    if ((step + 1) % Math.round(1 / compiled.dt) === 0) {
+      // Data row
+      const row: Record<string, number> = { day: day }
 
-    data.push(row)
+      // Compartment id -> new compartment value
+      // Add to row to push to data for graphing
+      for (const k in cIdToIdx) {
+        const idx = cIdToIdx[k]
+        row[cIdSym[k]] = cVals[idx]
+        console.log(cIdSym[k])
+      }
+      data.push(row)
+    }
   }
 
   return data
