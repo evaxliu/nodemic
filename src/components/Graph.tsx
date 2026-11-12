@@ -5,17 +5,6 @@ import { type CompartmentNode } from './CustomNode';
 import { type FlowEdge } from './CustomEdge';
 import { calculate } from '@/lib/model_equations';
 
-// Data will be in the form of JSON
-const data = [
-  { day: 0, s: 600, i: 1, r: 1 },
-  { day: 10, s: 500, i: 10, r: 25 },
-  { day: 20, s: 300, i: 40, r: 100 },
-  { day: 30, s: 200, i: 90, r: 200 },
-  { day: 40, s: 100, i: 40, r: 300 },
-  { day: 50, s: 25, i: 10, r: 500 },
-  { day: 60, s: 10, i: 1, r: 600 },
-];
-
 interface Props { nodes: CompartmentNode[], edges: FlowEdge[], days: number }
 
 export default function Graph({nodes, edges, days} : Props) {
@@ -56,9 +45,7 @@ export default function Graph({nodes, edges, days} : Props) {
     return {dt: dt, days: d, cVals: compartmentValues, cIdToIdx: cIdToIdx, flowRates: flowRates, infC: infectiousC }
   }, [d, nodes, edges])
 
-  const data2 = calculate(compiled)
-
-  console.log(data2)
+  const data = calculate(compiled)
 
   return (
     <>
@@ -68,7 +55,7 @@ export default function Graph({nodes, edges, days} : Props) {
       <LineChart
         style={{ width: '100%', aspectRatio: 1.618, maxWidth: 500 }}
         responsive
-        data={data2}
+        data={data}
         margin={{
           top: 20,
           right: 20,
@@ -77,7 +64,7 @@ export default function Graph({nodes, edges, days} : Props) {
         }}
       >
         <CartesianGrid />
-        {Object.keys(data2[0])
+        {Object.keys(data[0])
         .filter((key) => key !== "day")
         .map((key) => (
           <Line key={key} type="monotone" dataKey={key} strokeWidth={2} name={key} stroke='blue' dot={false}/>

@@ -9,8 +9,8 @@ type calculateProps = {
   infC: Set<number>;
 }
 
-// Data will be in the form of JSON
-const data = [
+// Data will be in the form of Object
+const sampleData = [
   { day: 0, s: 600, i: 1, r: 1 },
   { day: 10, s: 500, i: 10, r: 25 },
   { day: 20, s: 300, i: 40, r: 100 },
