@@ -1,21 +1,19 @@
 import { BaseEdge, type EdgeProps, type Edge, getBezierPath, useReactFlow, EdgeLabelRenderer } from '@xyflow/react';
- 
+
+// Initialize data types stored in edge
 export type FlowEdge = Edge<{ value: number }, 'custom-edge'>;
  
-export default function CustomEdge({
-  id,
-  sourceX,
-  sourceY,
-  targetX,
-  targetY,
-  data,
-  selected,
-  markerEnd
-}: EdgeProps<FlowEdge>) {
+export default function CustomEdge({ id, sourceX, sourceY, targetX, targetY, data, selected, markerEnd }: EdgeProps<FlowEdge>) {
+  // Create arrow style
   const [edgePath, labelX, labelY] = getBezierPath({ sourceX, sourceY, targetX, targetY });
+
+  // Visual indication if arrow selected
   const activeMarkerEnd = selected ? 'url(#selected-marker)' : markerEnd;
 
+  // Init hook to handle changes to edge
   const reactFlow = useReactFlow();
+
+  // Handle edge value change
   const handleValueChange = (id: string, e: number) => {
     reactFlow.updateEdgeData(id, { value: e })
   }

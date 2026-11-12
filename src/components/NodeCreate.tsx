@@ -6,6 +6,7 @@ type NodeCreateProps = { setNodes: Dispatch<SetStateAction<CompartmentNode[]>>, 
 
 export default function NodeCreate({ setNodes, showModal } : NodeCreateProps) {
 
+
   function createNewNode(e: React.FormEvent<HTMLFormElement>) {
     // Prevent the browser from reloading the page
     e.preventDefault();
@@ -17,7 +18,9 @@ export default function NodeCreate({ setNodes, showModal } : NodeCreateProps) {
     const symbol = formData.get("Symbol")?.toString() ?? "";
     const value = Number(formData.get("Value"));
     const infectious = formData.get("Infectious") === "True";
+    // Add node to state
     setNodes((nodes) => [...nodes, { id: uuidv4(), position: { x: 50, y: 50 }, data: { name: name, symbol: symbol, value: value, infectious: infectious }, type: "custom-node" }]);
+    // Reset form
     e.currentTarget.reset();
   }
 

@@ -5,9 +5,10 @@ import { type FlowEdge } from './CustomEdge';
 type InspectorProps = { nodes: CompartmentNode[], edges: FlowEdge[], days: number, setDays: Dispatch<SetStateAction<number>> }
 
 export default function Inspector({nodes, edges, days, setDays} : InspectorProps) {
-  const idToName = new Map<string, string>;
+  // Init compartment id -> compartment name so flow can grab compartment info
+  const idToName: Record<string, string> = {};
   for (const node of nodes) {
-    idToName.set(node.id, node.data.name)
+    idToName[node.id] = node.data.name
   }
 
   return (
@@ -32,7 +33,7 @@ export default function Inspector({nodes, edges, days, setDays} : InspectorProps
             {edges.map((edge) => 
               <div key={edge.id} className='space-y-1 rounded-md bg-gray-50 px-3 py-2'>
                 <p className='text-gray-400'>Id: {edge.id}</p>
-                <p>Flow: {idToName.get(edge.source)} → {idToName.get(edge.target)}</p>
+                <p>Flow: {idToName[edge.source]} → {idToName[edge.target]}</p>
                 <p>Value: {edge.data?.value}</p>
               </div>
             )}

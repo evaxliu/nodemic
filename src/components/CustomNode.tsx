@@ -1,9 +1,11 @@
 import { Handle, Node, NodeProps, Position, useReactFlow } from '@xyflow/react';
 
+// Initialize data types stored in compartment
 export type CompartmentNode = Node<{
   name: string, symbol: string, value: number, infectious: boolean 
 }, 'custom-node'>;
 
+// Init compartment type colors
 const badgeColors: Record<string, string> = {
   S: 'bg-blue-300 text-blue-950',
   I: 'bg-red-300 text-red-950',
@@ -11,13 +13,18 @@ const badgeColors: Record<string, string> = {
 };
 
 export default function CustomNode({ data, isConnectable, selected, id } : NodeProps<CompartmentNode>) {
+  // Visual indication if node selected
   const stateClasses = selected
     ? 'border-[#A47DAB]'
     : 'border-[#303238] hover:border-[#7a7d86] in-focus:border-[#5f6470]';
 
+  // Assign colors for each compartment type
   const badgeColor = badgeColors[data?.symbol] ?? 'bg-gray-300 text-gray-950';
 
+  // Init hook to handle changes to node
   const reactFlow = useReactFlow();
+
+  // Handle node value change
   const handleValueChange = (id: string, e: number) => {
     reactFlow.updateNodeData(id, { value: e })
   }

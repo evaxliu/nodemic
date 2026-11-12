@@ -23,19 +23,24 @@ import CustomNode, { type CompartmentNode } from './CustomNode';
 import Inspector from './Inspector';
 import NodeCreate from './NodeCreate';
 
+// Import custom node type for compartment handling
 const nodeTypes = {
   'custom-node': CustomNode
 }
 
+// Import edge node type for flow handling
 const edgeTypes = {
   'custom-edge': CustomEdge,
 };
 
+// Initialize Compartments
 const initialNodes: CompartmentNode[] = [
   { id: 'n1', position: { x: 0, y: 0 }, data: { name: 'Susceptible', symbol: "S", value: 99995, infectious: false }, type: 'custom-node' },
   { id: 'n2', position: { x: 0, y: 120 }, data: { name: 'Infected', symbol: "I", value: 5, infectious: true }, type: 'custom-node' },
   { id: 'n3', position: { x: 0, y: 240 }, data: { name: 'Recovered', symbol: "R", value: 0, infectious: false }, type: 'custom-node' }
 ];
+
+// Initialize Flows
 const initialEdges: FlowEdge[] = [
   { id: 'n1-n2', source: 'n1', target: 'n2', data: { value: 0.3 }, type: 'custom-edge', 
     markerEnd: {
@@ -57,15 +62,24 @@ const toolbarButton =
   'cursor-pointer rounded-md bg-[#24262c] px-3 py-1.5 hover:bg-[#30333b]';
 
 export default function Canvas() {
+  // Initialize compartments
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+
+  // Initialize edges
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  // Initialize days of model
   const [days, setDays] = useState(160);
+
+  // Boolean for show or hide create compartment form
   const [showModal, setShowModal] = useState<boolean>(false);
 
+  // Toggle show or hide create compartment form
   function toggleModal() {
     setShowModal(!showModal);
   }
 
+  // Handle compartment deletion - copied from ReactFlow example
   const onNodesDelete: OnNodesDelete = useCallback(
     (deleted) => {
       let remainingNodes = [...nodes];
@@ -94,6 +108,7 @@ export default function Canvas() {
     [nodes, setEdges, edges],
   );
 
+  // Handle flow connection - copied from ReactFlow example
   const onConnect: OnConnect = useCallback(
     (connection) => setEdges((eds) => addEdge(connection, eds)),
     [setEdges],
