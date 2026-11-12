@@ -98,15 +98,14 @@ export default function Canvas() {
 
   const onConnect: OnConnect = useCallback(
     (connection) => {
-      const newEdge = { id: uuidv4(), source: connection.source, target: connection.target, data: { value: "0", kind: "Infection" }, type: 'custom-edge', 
+      const newEdge: Edge = { id: uuidv4(), source: connection.source, target: connection.target, data: { value: "0", kind: "Simple" }, type: 'custom-edge', 
         markerEnd: {
           type: MarkerType.ArrowClosed,
           width: 20,
           height: 20,
         },
       }
-      setEdges((eds) => addEdge(connection, eds))
-      setNodes((nodes) => [...nodes, { id: uuidv4(), position: { x: 50, y: 50 }, data: { name: name, symbol: symbol, value: value, infectious: infectious }, type: "custom-node" }]);
+      setEdges((eds) => addEdge(newEdge, eds))
     },
     [setEdges],
   );

@@ -1,6 +1,6 @@
 import { BaseEdge, type EdgeProps, type Edge, getBezierPath, useReactFlow, EdgeLabelRenderer } from '@xyflow/react';
  
-type CustomEdge = Edge<{ value: string }, 'custom-edge'>;
+type CustomEdge = Edge<{ value: string, kind: 'Infection' | 'Simple' }, 'custom-edge'>;
  
 export default function CustomEdge({
   id,
