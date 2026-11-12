@@ -7,6 +7,7 @@ type calculateProps = {
   cIdToIdx: Record<string, number>;
   flowRates: { from: number, to: number, rate: number, infection: boolean }[];
   infC: Set<number>;
+  cIdSym: Record<string, string>;
 }
 
 // Data will be in the form of Object
@@ -25,9 +26,10 @@ export function calculate(compiled: calculateProps) {
   const cIdToIdx = compiled.cIdToIdx
   const cVals = [...compiled.cVals]
   const infC = compiled.infC
+  const cIdSym = compiled.cIdSym
 
   const data = []
-  data.push(initializeData(compiled.cIdToIdx, compiled.cVals))
+  data.push(initializeData(cIdSym, cIdToIdx, cVals))
   console.log(data)
 
   // Calculate changes for each step - Euler
@@ -92,7 +94,8 @@ export function calculate(compiled: calculateProps) {
     // Add to row to push to data for graphing
     for (const k in cIdToIdx) {
       const idx = cIdToIdx[k]
-      row[k] = cVals[idx]
+      row[cIdSym[k]] = cVals[idx]
+      console.log(cIdSym[k])
     }
 
     data.push(row)
@@ -101,11 +104,11 @@ export function calculate(compiled: calculateProps) {
   return data
 }
 
-function initializeData(cIdToIdx: Record<string, number>, cVals: number[]) {
+function initializeData(cIdSym: Record<string, string>, cIdToIdx: Record<string, number>, cVals: number[]) {
   const row: Record<string, number> = { day: 0 }
   for (const k in cIdToIdx) {
     const idx = cIdToIdx[k]
-    row[k] = cVals[idx]
+    row[cIdSym[k]] = cVals[idx]
   }
   return row
 }

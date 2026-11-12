@@ -20,12 +20,17 @@ export default function Graph({nodes, edges, days} : Props) {
     // set(1)
     const infectiousC = new Set<number>();
 
+    // { n1: S, n2: I, n3: R }
+    // Id -> Symbol
+    const cIdSymbol: Record<string, string> = {}
+
     for (let i = 0; i < nodes.length; i++) {
       compartmentValues.push(nodes[i].data.value)
       cIdToIdx[nodes[i].id] = i
       if (nodes[i].data.infectious) {
         infectiousC.add(i)
       }
+      cIdSymbol[nodes[i].id] = nodes[i].data.name
     }
 
     // [{ from: 0, to: 1, rate: 0.3, infection: true }]
@@ -42,7 +47,7 @@ export default function Graph({nodes, edges, days} : Props) {
     // console.log(cIdToIdx)
     // console.log(flowRates)
 
-    return {dt: dt, days: d, cVals: compartmentValues, cIdToIdx: cIdToIdx, flowRates: flowRates, infC: infectiousC }
+    return {dt: dt, days: d, cVals: compartmentValues, cIdToIdx: cIdToIdx, flowRates: flowRates, infC: infectiousC, cIdSym: cIdSymbol }
   }, [d, nodes, edges])
 
   const data = calculate(compiled)
