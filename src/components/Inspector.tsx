@@ -24,7 +24,7 @@ export default function Inspector({nodes, edges, days, setDays} : InspectorProps
                 <p className={node.data.infectious ? 'text-red-700' : 'text-emerald-700'}>Type: {(node.data.infectious ? 'Infectious' : 'Non-infectious')}</p>
                 <p>Symbol: {node.data.symbol}</p>
                 <p>Name: {node.data.name}</p>
-                <p>Value: {node.data.value}</p>
+                <p>Population: {node.data.value}</p>
               </div>
             )}
           </div>
@@ -38,7 +38,7 @@ export default function Inspector({nodes, edges, days, setDays} : InspectorProps
                   <p className='text-gray-400'>Id: {edge.id}</p>
                   <p>Flow: {idToName[edge.source]} → {idToName[edge.target]}</p>
                   <p className={isInfection ? 'text-red-700' : 'text-gray-600'}>Kind: {edge.data?.kind}</p>
-                  <p>Value: {edge.data?.value}</p>
+                  <p>Rate: {edge.data?.value}</p>
                 </div>
               );
             })}
