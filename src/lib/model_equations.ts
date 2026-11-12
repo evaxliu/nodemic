@@ -1,19 +1,94 @@
-// Euler method
-// export default function euler_method(S: number, I: number, R: number, totalPopN: number, beta: number, gamma: number, unitOfTime_t: number, SIRPerDay: number[][]) {
-//   for(let i = 1; i < 160; i += unitOfTime_t) {
-//     const infectedArrow = (I * beta * (S/totalPopN))
-//     const plainArrow = (I * gamma)
-//     // dS/dt -= (beta/N) * I * S
-//     S = S - infectedArrow
-//     // I ← I + dI · dt
-//     I = I + infectedArrow - plainArrow
-//     // R ← R + dR · dt
-//     R = R + plainArrow
-//     SIRPerDay.push([S, I, R, S+I+R])
-//   }
-//   return SIRPerDay
-// };
+// Euler
 
-// I plan on using odex
+type calculateProps = {
+  dt: number;
+  days: number;
+  cVals: number[];
+  cIdToIdx: Record<string, number>;
+  flowRates: { from: number, to: number, rate: number, infection: boolean }[];
+  infC: Set<number>;
+}
 
-// // RK4
+// Data will be in the form of JSON
+const data = [
+  { day: 0, s: 600, i: 1, r: 1 },
+  { day: 10, s: 500, i: 10, r: 25 },
+  { day: 20, s: 300, i: 40, r: 100 },
+  { day: 30, s: 200, i: 90, r: 200 },
+  { day: 40, s: 100, i: 40, r: 300 },
+  { day: 50, s: 25, i: 10, r: 500 },
+  { day: 60, s: 10, i: 1, r: 600 },
+];
+
+export function calculate(compiled: calculateProps) {
+  const flows = compiled.flowRates
+  const cIdToIdx = compiled.cIdToIdx
+  const cVals = [...compiled.cVals]
+  const infC = compiled.infC
+
+  const data = []
+  data.push(initializeData(compiled.cIdToIdx, compiled.cVals))
+  console.log(data)
+
+  // S→I = 0.3 × 99,995 × (5 ÷ 100,000) ≈ 1.5
+  // I→R = 0.1 × 5 = 0.5
+  // Infectious total = total of all infectious compartments
+  // flow source -> flow target (infection) = flow rate * flow source pop * (infectious total / total pop)
+  // flow source -> flow target (simple) = flow rate * flow source
+  // Changes subtract from source, add to target
+  for (let step = 0; step < compiled.days/compiled.dt; step++) {
+    let N = 0
+    for (const val of cVals) {
+      N += val
+    }
+
+    let infTotal = 0
+    for (let i = 0; i < cVals.length; i++) {
+      if (infC.has(i)) {
+        infTotal += cVals[i]
+      }
+    }
+    
+    const day = (step + 1) * compiled.dt
+    const row: Record<string, number> = { day: day }
+
+    const change = Array<number>(cVals.length).fill(0);
+
+    for (let i = 0; i < flows.length; i++) {
+      const sIdx = flows[i].from
+      const tIdx = flows[i].to
+      let dCompartment = 0
+
+      if (flows[i].infection) {
+        dCompartment = flows[i].rate * cVals[sIdx] * (infTotal / N) * compiled.dt
+      } else {
+        dCompartment = flows[i].rate * cVals[sIdx] * compiled.dt
+      }
+
+      change[sIdx] -= dCompartment
+      change[tIdx] += dCompartment
+    }
+
+    for (let i = 0; i < change.length; i++) {
+      cVals[i] += change[i]
+    }
+
+    for (const k in cIdToIdx) {
+      const idx = cIdToIdx[k]
+      row[k] = cVals[idx]
+    }
+
+    data.push(row)
+  }
+
+  return data
+}
+
+function initializeData(cIdToIdx: Record<string, number>, cVals: number[]) {
+  const row: Record<string, number> = { day: 0 }
+  for (const k in cIdToIdx) {
+    const idx = cIdToIdx[k]
+    row[k] = cVals[idx]
+  }
+  return row
+}

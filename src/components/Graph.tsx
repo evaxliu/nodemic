@@ -39,7 +39,7 @@ export default function Graph({nodes, edges, days} : Props) {
       }
     }
 
-    // [{ from: n1, to: n2, rate: 0.3, infection: true }]
+    // [{ from: 0, to: 1, rate: 0.3, infection: true }]
     const flowRates: { from: number, to: number, rate: number, infection: boolean }[] = []
 
     for (let i = 0; i < edges.length; i++) {
@@ -56,8 +56,10 @@ export default function Graph({nodes, edges, days} : Props) {
     return {dt: dt, days: d, cVals: compartmentValues, cIdToIdx: cIdToIdx, flowRates: flowRates, infC: infectiousC }
   }, [d, nodes, edges])
 
-  calculate(compiled)
-    
+  const data2 = calculate(compiled)
+
+  console.log(data2)
+
   return (
     <>
       <p className='m-5'>
@@ -66,7 +68,7 @@ export default function Graph({nodes, edges, days} : Props) {
       <LineChart
         style={{ width: '100%', aspectRatio: 1.618, maxWidth: 500 }}
         responsive
-        data={data}
+        data={data2}
         margin={{
           top: 20,
           right: 20,
@@ -75,9 +77,11 @@ export default function Graph({nodes, edges, days} : Props) {
         }}
       >
         <CartesianGrid />
-        <Line type="monotone" dataKey="s" strokeWidth={2} name="S" stroke='blue' dot={false}/>
-        <Line type="monotone" dataKey="i" strokeWidth={2} name="I" stroke='red' dot={false}/>
-        <Line type="monotone" dataKey="r" strokeWidth={2} name="R" stroke='green' dot={false}/>
+        {Object.keys(data2[0])
+        .filter((key) => key !== "day")
+        .map((key) => (
+          <Line key={key} type="monotone" dataKey={key} strokeWidth={2} name={key} stroke='blue' dot={false}/>
+        ))}
         <XAxis dataKey="day" label={{ value: 'Time (Days)', position: 'bottom' }} />
         <YAxis width="auto" label={{ value: 'Pop', position: 'insideLeft', angle: -90 }} />
         <Legend itemSorter={null} position="top"/>
