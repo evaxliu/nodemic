@@ -30,14 +30,18 @@ export default function Inspector({nodes, edges, days, setDays} : InspectorProps
           </div>
           <div className='flex flex-col gap-2'>
             <p>Flows</p>
-            {edges.map((edge) => 
-              <div key={edge.id} className='space-y-1 rounded-md bg-gray-50 px-3 py-2'>
-                <p className='text-gray-400'>Id: {edge.id}</p>
-                <p>Flow: {idToName[edge.source]} → {idToName[edge.target]}</p>
-                <p>Kind: {edge.data?.kind}</p>
-                <p>Value: {edge.data?.value}</p>
-              </div>
-            )}
+            {edges.map((edge) => {
+              const isInfection = edge.data?.kind === 'Infection';
+
+              return (
+                <div key={edge.id} className={`space-y-1 rounded-md px-3 py-2 ${isInfection ? 'bg-red-50' : 'bg-gray-50'}`}>
+                  <p className='text-gray-400'>Id: {edge.id}</p>
+                  <p>Flow: {idToName[edge.source]} → {idToName[edge.target]}</p>
+                  <p className={isInfection ? 'text-red-700' : 'text-gray-600'}>Kind: {edge.data?.kind}</p>
+                  <p>Value: {edge.data?.value}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
     </div>
