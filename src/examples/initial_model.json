@@ -1,0 +1,77 @@
+{
+  "compartments": [
+    {
+      "id": "n1",
+      "position": {
+        "x": -50,
+        "y": 0
+      },
+      "data": {
+        "name": "Susceptible",
+        "symbol": "S",
+        "value": "99,995",
+        "infectious": false
+      },
+      "type": "custom-node"
+    },
+    {
+      "id": "n2",
+      "position": {
+        "x": -50,
+        "y": 120
+      },
+      "data": {
+        "name": "Infected",
+        "symbol": "I",
+        "value": "5",
+        "infectious": true
+      },
+      "type": "custom-node"
+    },
+    {
+      "id": "n3",
+      "position": {
+        "x": -50,
+        "y": 240
+      },
+      "data": {
+        "name": "Recovered",
+        "symbol": "R",
+        "value": "0",
+        "infectious": false
+      },
+      "type": "custom-node"
+    }
+  ],
+  
+  "flows": [
+    {
+      "id": "n1-n2",
+      "source": "n1",
+      "target": "n2",
+      "data": {
+        "value": "23"
+      },
+      "type": "custom-edge",
+      "markerEnd": {
+        "type": "MarkerType.ArrowClosed",
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "n2-n3",
+      "source": "n2",
+      "target": "n3",
+      "data": {
+        "value": "24"
+      },
+      "type": "custom-edge",
+      "markerEnd": {
+        "type": "MarkerType.ArrowClosed",
+        "width": 20,
+        "height": 20
+      }
+    }
+  ]
+}
