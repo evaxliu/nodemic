@@ -30,49 +30,66 @@ export function calculate(compiled: calculateProps) {
   data.push(initializeData(compiled.cIdToIdx, compiled.cVals))
   console.log(data)
 
-  // S→I = 0.3 × 99,995 × (5 ÷ 100,000) ≈ 1.5
-  // I→R = 0.1 × 5 = 0.5
-  // Infectious total = total of all infectious compartments
-  // flow source -> flow target (infection) = flow rate * flow source pop * (infectious total / total pop)
-  // flow source -> flow target (simple) = flow rate * flow source
-  // Changes subtract from source, add to target
+  // Calculate changes for each step - Euler
   for (let step = 0; step < compiled.days/compiled.dt; step++) {
+    // Calculate total population (sum of all compartments)
     let N = 0
     for (const val of cVals) {
       N += val
     }
 
+    // Calculate total infectious (sum of all infectious compartments)
+    // Infectious total = total of all infectious compartments
     let infTotal = 0
     for (let i = 0; i < cVals.length; i++) {
       if (infC.has(i)) {
         infTotal += cVals[i]
       }
     }
-    
+
+    // Calculate current day based on current step
     const day = (step + 1) * compiled.dt
+    console.log(day)
+
+    // Data row
     const row: Record<string, number> = { day: day }
 
+    // Changes to each compartment value
+    // Changes subtract from source, add to target
     const change = Array<number>(cVals.length).fill(0);
 
+    // S→I = 0.3 × 99,995 × (5 ÷ 100,000) ≈ 1.5
+    // I→R = 0.1 × 5 = 0.5
+    // flow source -> flow target (infection) = flow rate * flow source pop * (infectious total / total pop)
+    // flow source -> flow target (simple) = flow rate * flow source
     for (let i = 0; i < flows.length; i++) {
+      // Source index
       const sIdx = flows[i].from
+      // Target index
       const tIdx = flows[i].to
+
+      // Compartment change
       let dCompartment = 0
 
+      // Calculation infection vs not infection flow
       if (flows[i].infection) {
         dCompartment = flows[i].rate * cVals[sIdx] * (infTotal / N) * compiled.dt
       } else {
         dCompartment = flows[i].rate * cVals[sIdx] * compiled.dt
       }
 
+      // Changes subtract from source, add to target
       change[sIdx] -= dCompartment
       change[tIdx] += dCompartment
     }
 
+    // Apply changes to vals
     for (let i = 0; i < change.length; i++) {
       cVals[i] += change[i]
     }
 
+    // Compartment id -> new compartment value
+    // Add to row to push to data for graphing
     for (const k in cIdToIdx) {
       const idx = cIdToIdx[k]
       row[k] = cVals[idx]
