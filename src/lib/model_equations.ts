@@ -30,7 +30,6 @@ export function calculate(compiled: calculateProps) {
 
   const data = []
   data.push(initializeData(cIdSym, cIdToIdx, cVals))
-  console.log(data)
 
   // Calculate changes for each step - Euler
   for (let step = 0; step < compiled.days/compiled.dt; step++) {
@@ -51,7 +50,6 @@ export function calculate(compiled: calculateProps) {
 
     // Calculate current day based on current step
     const day = (step + 1) * compiled.dt
-    console.log(day)
 
     // Changes to each compartment value
     // Changes subtract from source, add to target
@@ -97,7 +95,6 @@ export function calculate(compiled: calculateProps) {
       for (const k in cIdToIdx) {
         const idx = cIdToIdx[k]
         row[cIdSym[k]] = cVals[idx]
-        console.log(cIdSym[k])
       }
       data.push(row)
     }

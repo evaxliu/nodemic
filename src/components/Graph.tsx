@@ -1,5 +1,5 @@
 "use client"
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts';
 import { type CompartmentNode } from './CustomNode';
 import { type FlowEdge } from './CustomEdge';
@@ -7,50 +7,65 @@ import { calculate } from '@/lib/model_equations';
 
 interface Props { nodes: CompartmentNode[], edges: FlowEdge[], days: number }
 
+type NodeKey = [id: string, value: number, infectious: boolean, name: string]
+type EdgeKey = [source: string, target: string, rate: number, kind: string]
+
 export default function Graph({nodes, edges, days} : Props) {
+  // Make node and edges string because string can still be equal even if rebuilt. Doesn't recompile like objects do when rebuilt.
+  // No recompile for every repositioning of compartment, performance im provement
+  const nodeSig = JSON.stringify(
+    nodes.map((n): NodeKey => [n.id, n.data.value, n.data.infectious, n.data.name])
+  )
+  const edgeSig = JSON.stringify(
+    edges
+      .filter((e) => e.data !== undefined)
+      .map((e): EdgeKey => [e.source, e.target, e.data!.value, e.data!.kind])
+  )
+
   const dt = 0.1
   const d = days
   const compiled = useMemo(() => {
+    const storeNodes: NodeKey[] = JSON.parse(nodeSig)
+    const storeEdges: EdgeKey[] = JSON.parse(edgeSig)
+
     // [99995, 5, 0]
     const compartmentValues: number[] = []
-
     // { n1: 0, n2: 1, n3: 2 }
     const cIdToIdx: Record<string, number> = {}
-
     // set(1)
     const infectiousC = new Set<number>();
-
     // { n1: S, n2: I, n3: R }
     // Id -> Symbol
     const cIdSymbol: Record<string, string> = {}
 
-    for (let i = 0; i < nodes.length; i++) {
-      compartmentValues.push(nodes[i].data.value)
-      cIdToIdx[nodes[i].id] = i
-      if (nodes[i].data.infectious) {
+    for (let i = 0; i < storeNodes.length; i++) {
+      const [id, value, infectious, name] = storeNodes[i]
+      compartmentValues.push(value)
+      cIdToIdx[id] = i
+      if (infectious) {
         infectiousC.add(i)
       }
-      cIdSymbol[nodes[i].id] = nodes[i].data.name
+      cIdSymbol[id] = name
     }
 
     // [{ from: 0, to: 1, rate: 0.3, infection: true }]
     const flowRates: { from: number, to: number, rate: number, infection: boolean }[] = []
 
-    for (let i = 0; i < edges.length; i++) {
-      const data = edges[i].data;
-      if (data !== undefined) {
-        flowRates.push({ from: cIdToIdx[edges[i].source], to: cIdToIdx[edges[i].target], rate: data.value, infection: (data.kind === "Infection") })
-      }
+    for (const [source, target, rate, kind] of storeEdges) {
+      flowRates.push({
+        from: cIdToIdx[source],
+        to: cIdToIdx[target],
+        rate: rate,
+        infection: (kind === "Infection")
+      })
     }
 
-    // console.log(compartmentValues)
-    // console.log(cIdToIdx)
-    // console.log(flowRates)
-
     return {dt: dt, days: d, cVals: compartmentValues, cIdToIdx: cIdToIdx, flowRates: flowRates, infC: infectiousC, cIdSym: cIdSymbol }
-  }, [d, nodes, edges])
+  }, [d, nodeSig, edgeSig])
 
-  const data = calculate(compiled)
+  const data = useMemo(() => {
+    return calculate(compiled)
+  }, [compiled])
 
   return (
     <>
