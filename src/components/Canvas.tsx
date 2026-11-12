@@ -98,16 +98,22 @@ export default function Canvas() {
 
   const onConnect: OnConnect = useCallback(
     (connection) => {
-      const newEdge: Edge = { id: uuidv4(), source: connection.source, target: connection.target, data: { value: "0", kind: "Simple" }, type: 'custom-edge', 
+
+      const sNodeInfectious = nodes.find((n) => n.id === connection.source)?.data.infectious
+      const tNodeInfectious = nodes.find((n) => n.id === connection.target)?.data.infectious
+      const isInfection = !sNodeInfectious && tNodeInfectious
+
+      const newEdge: Edge = { id: uuidv4(), source: connection.source, target: connection.target, data: { value: "0", kind: isInfection ? "Infection" : "Simple" }, type: 'custom-edge', 
         markerEnd: {
           type: MarkerType.ArrowClosed,
           width: 20,
           height: 20,
         },
       }
+
       setEdges((eds) => addEdge(newEdge, eds))
     },
-    [setEdges],
+    [nodes, setEdges],
   );
 
   return (
