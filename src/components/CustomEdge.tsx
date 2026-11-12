@@ -1,7 +1,7 @@
 import { BaseEdge, type EdgeProps, type Edge, getBezierPath, useReactFlow, EdgeLabelRenderer } from '@xyflow/react';
- 
+
 type CustomEdge = Edge<{ value: string, kind: 'Infection' | 'Simple' }, 'custom-edge'>;
- 
+
 export default function CustomEdge({
   id,
   sourceX,
@@ -15,9 +15,15 @@ export default function CustomEdge({
   const [edgePath, labelX, labelY] = getBezierPath({ sourceX, sourceY, targetX, targetY });
   const activeMarkerEnd = selected ? 'url(#selected-marker)' : markerEnd;
 
+  const isInfection = data?.kind === 'Infection';
+
   const reactFlow = useReactFlow();
   const handleValueChange = (id: string, e: string) => {
     reactFlow.updateEdgeData(id, { value: e })
+  }
+
+  const handleKindChange = (id: string, e: 'Infection' | 'Simple') => {
+    reactFlow.updateEdgeData(id, { kind: e })
   }
 
   return (
@@ -59,14 +65,28 @@ export default function CustomEdge({
           }}
           className="edge-label-renderer__custom-edge nodrag nopan"
         >
-          <input
-            name="value"
-            defaultValue={data?.value}
-            className={`nodrag w-14 rounded-md border bg-[#1b1d22] px-2 py-1 text-center text-xs text-white outline-none focus:border-[#A47DAB] ${
+          <div
+            className={`flex items-center overflow-hidden rounded-md border bg-[#1b1d22] text-xs ${
               selected ? 'border-[#A47DAB]' : 'border-[#303238]'
             }`}
-            onChange={(e) => handleValueChange(id, e.target.value)}
-          />
+          >
+            <input
+              name="value"
+              defaultValue={data?.value}
+              className="nodrag w-12 bg-transparent px-2 py-1 text-center text-white outline-none"
+              onChange={(e) => handleValueChange(id, e.target.value)}
+            />
+            <button
+              type="button"
+              title={isInfection ? 'Infection flow (click for simple)' : 'Simple flow (click for infection)'}
+              className={`nodrag border-l border-[#303238] px-1.5 py-1 font-mono font-semibold ${
+                isInfection ? 'bg-red-300 text-red-950' : 'text-gray-400'
+              }`}
+              onClick={() => handleKindChange(id, isInfection ? 'Simple' : 'Infection')}
+            >
+              {isInfection ? 'INF' : 'SIM'}
+            </button>
+          </div>
         </div>
       </EdgeLabelRenderer>
     </>
