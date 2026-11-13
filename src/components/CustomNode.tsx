@@ -24,7 +24,7 @@ export default function CustomNode({ data, isConnectable, selected, id } : NodeP
     : 'border-[#303238] hover:border-[#7a7d86] in-focus:border-[#5f6470]';
 
   // Assign colors for each compartment type
-  const badgeColor = compartmentColors[data?.symbol].badge ?? 'bg-gray-300 text-gray-950';
+  const badgeColor = compartmentColors[data?.symbol]?.badge ?? 'bg-gray-300 text-gray-950';
 
   // Init hook to handle changes to node
   const reactFlow = useReactFlow();

@@ -11,15 +11,15 @@ type calculateProps = {
 }
 
 // Data will be in the form of Object
-const sampleData = [
-  { day: 0, s: 600, i: 1, r: 1 },
-  { day: 10, s: 500, i: 10, r: 25 },
-  { day: 20, s: 300, i: 40, r: 100 },
-  { day: 30, s: 200, i: 90, r: 200 },
-  { day: 40, s: 100, i: 40, r: 300 },
-  { day: 50, s: 25, i: 10, r: 500 },
-  { day: 60, s: 10, i: 1, r: 600 },
-];
+// const sampleData = [
+//   { day: 0, s: 600, i: 1, r: 1 },
+//   { day: 10, s: 500, i: 10, r: 25 },
+//   { day: 20, s: 300, i: 40, r: 100 },
+//   { day: 30, s: 200, i: 90, r: 200 },
+//   { day: 40, s: 100, i: 40, r: 300 },
+//   { day: 50, s: 25, i: 10, r: 500 },
+//   { day: 60, s: 10, i: 1, r: 600 },
+// ];
 
 export function calculate(compiled: calculateProps) {
   const flows = compiled.flowRates
@@ -70,7 +70,11 @@ export function calculate(compiled: calculateProps) {
 
       // Calculation infection vs not infection flow
       if (flows[i].infection) {
-        dCompartment = flows[i].rate * cVals[sIdx] * (infTotal / N) * compiled.dt
+        let infShare = 0
+        if (N > 0) {
+          infShare = infTotal / N
+        }
+        dCompartment = flows[i].rate * cVals[sIdx] * (infShare) * compiled.dt
       } else {
         dCompartment = flows[i].rate * cVals[sIdx] * compiled.dt
       }
