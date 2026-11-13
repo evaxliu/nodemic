@@ -96,7 +96,7 @@ export default function Graph({nodes, edges, days} : Props) {
             dot={false}
           />
         ))}
-        <XAxis dataKey="day" label={{ value: 'Time (Days)', position: 'bottom' }} />
+        <XAxis dataKey="day" type="number" label={{ value: 'Time (Days)', position: 'bottom' }} />
         <YAxis width="auto" label={{ value: 'Pop', position: 'insideLeft', angle: -90 }} />
         <Legend itemSorter={null} position="top"/>
         <Tooltip />
