@@ -63,8 +63,8 @@ See the Methods page in the app for details on the numerical methods used.
 ## Roadmap
 
 - [x] Landing page and navbar
-- [ ] Visual model editor
-- [ ] Live simulation
+- [x] Visual model editor
+- [x] Live simulation
 - [ ] Share / fork / embed
 - [ ] Public model library
 - [ ] Data fitting
