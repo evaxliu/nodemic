@@ -1,24 +1,23 @@
 import { BaseEdge, type EdgeProps, type Edge, getBezierPath, useReactFlow, EdgeLabelRenderer } from '@xyflow/react';
 
-type CustomEdge = Edge<{ value: string, kind: 'Infection' | 'Simple' }, 'custom-edge'>;
-
-export default function CustomEdge({
-  id,
-  sourceX,
-  sourceY,
-  targetX,
-  targetY,
-  data,
-  selected,
-  markerEnd
-}: EdgeProps<CustomEdge>) {
+// Initialize data types stored in edge
+export type FlowEdge = Edge<{ value: number, kind: 'Infection' | 'Simple' }, 'custom-edge'>;
+ 
+export default function CustomEdge({ id, sourceX, sourceY, targetX, targetY, data, selected, markerEnd }: EdgeProps<FlowEdge>) {
+  // Create arrow style
   const [edgePath, labelX, labelY] = getBezierPath({ sourceX, sourceY, targetX, targetY });
+
+  // Visual indication if arrow selected
   const activeMarkerEnd = selected ? 'url(#selected-marker)' : markerEnd;
 
+  // Boolean if flow infection
   const isInfection = data?.kind === 'Infection';
 
+  // Init hook to handle changes to edge
   const reactFlow = useReactFlow();
-  const handleValueChange = (id: string, e: string) => {
+
+  // Handle edge value change
+  const handleValueChange = (id: string, e: number) => {
     reactFlow.updateEdgeData(id, { value: e })
   }
 
@@ -74,7 +73,10 @@ export default function CustomEdge({
               name="value"
               defaultValue={data?.value}
               className="nodrag w-12 bg-transparent px-2 py-1 text-center text-white outline-none"
-              onChange={(e) => handleValueChange(id, e.target.value)}
+              type="number"
+              min="0"
+              step="any"
+              onChange={(e) => handleValueChange(id, Number(e.target.value))}
             />
             <button
               type="button"

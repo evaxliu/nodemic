@@ -3,8 +3,6 @@ import { useState, useCallback } from 'react';
 import {
   ReactFlow,
   addEdge,
-  type Node,
-  type Edge,
   type OnConnect,
   Background,
   BackgroundVariant,
@@ -18,36 +16,41 @@ import {
   MarkerType,
   Panel,
 } from '@xyflow/react';
-import CustomEdge from './CustomEdge';
+import CustomEdge, { type FlowEdge } from './CustomEdge';
 import Graph from './Graph';
 import { Button } from '@base-ui/react';
-import CustomNode from './CustomNode';
+import CustomNode, { type CompartmentNode } from './CustomNode';
 import Inspector from './Inspector';
 import NodeCreate from './NodeCreate';
 import { v4 as uuidv4 } from 'uuid';
 
+// Import custom node type for compartment handling
 const nodeTypes = {
   'custom-node': CustomNode
 }
 
+// Import edge node type for flow handling
 const edgeTypes = {
   'custom-edge': CustomEdge,
 };
 
-const initialNodes: Node[] = [
-  { id: 'n1', position: { x: 0, y: 0 }, data: { name: 'Susceptible', symbol: "S", value: "99,995", infectious: false }, type: 'custom-node' },
-  { id: 'n2', position: { x: 0, y: 120 }, data: { name: 'Infected', symbol: "I", value: "5", infectious: true }, type: 'custom-node' },
-  { id: 'n3', position: { x: 0, y: 240 }, data: { name: 'Recovered', symbol: "R", value: "0", infectious: false }, type: 'custom-node' }
+// Initialize Compartments
+const initialNodes: CompartmentNode[] = [
+  { id: 'n1', position: { x: 0, y: 0 }, data: { name: 'Susceptible', symbol: "S", value: 99995, infectious: false }, type: 'custom-node' },
+  { id: 'n2', position: { x: 0, y: 120 }, data: { name: 'Infected', symbol: "I", value: 5, infectious: true }, type: 'custom-node' },
+  { id: 'n3', position: { x: 0, y: 240 }, data: { name: 'Recovered', symbol: "R", value: 0, infectious: false }, type: 'custom-node' }
 ];
-const initialEdges: Edge[] = [
-  { id: 'n1-n2', source: 'n1', target: 'n2', data: { value: "23", kind: "Infection" }, type: 'custom-edge', 
+
+// Initialize Flows
+const initialEdges: FlowEdge[] = [
+  { id: 'n1-n2', source: 'n1', target: 'n2', data: { value: 0.3, kind: "Infection" }, type: 'custom-edge', 
     markerEnd: {
       type: MarkerType.ArrowClosed,
       width: 20,
       height: 20,
     },
   },
-  { id: 'n2-n3', source: 'n2', target: 'n3', data: { value: "24", kind: "Simple" }, type: 'custom-edge', 
+  { id: 'n2-n3', source: 'n2', target: 'n3', data: { value: 0.1, kind: "Simple" }, type: 'custom-edge', 
     markerEnd: {
       type: MarkerType.ArrowClosed,
       width: 20,
@@ -60,42 +63,43 @@ const toolbarButton =
   'cursor-pointer rounded-md bg-[#24262c] px-3 py-1.5 hover:bg-[#30333b]';
 
 export default function Canvas() {
+  // Initialize compartments
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+
+  // Initialize edges
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  // Initialize days of model
+  const [days, setDays] = useState(160);
+
+  // Boolean for show or hide create compartment form
   const [showModal, setShowModal] = useState<boolean>(false);
 
+  // Toggle show or hide create compartment form
   function toggleModal() {
     setShowModal(!showModal);
   }
 
+  // Handle compartment deletion - copied from ReactFlow example
   const onNodesDelete: OnNodesDelete = useCallback(
     (deleted) => {
       let remainingNodes = [...nodes];
       setEdges(
         deleted.reduce((acc, node) => {
-          const incomers = getIncomers(node, remainingNodes, acc);
-          const outgoers = getOutgoers(node, remainingNodes, acc);
           const connectedEdges = getConnectedEdges([node], acc);
  
           const remainingEdges = acc.filter((edge) => !connectedEdges.includes(edge));
  
-          const createdEdges = incomers.flatMap(({ id: source }) =>
-            outgoers.map(({ id: target }) => ({
-              id: `${source}->${target}`,
-              source,
-              target,
-            })),
-          );
- 
           remainingNodes = remainingNodes.filter((rn) => rn.id !== node.id);
  
-          return [...remainingEdges, ...createdEdges];
+          return [...remainingEdges];
         }, edges),
       );
     },
     [nodes, setEdges, edges],
   );
 
+  // Handle flow connection - copied from ReactFlow example
   const onConnect: OnConnect = useCallback(
     (connection) => {
 
@@ -103,7 +107,7 @@ export default function Canvas() {
       const tNodeInfectious = nodes.find((n) => n.id === connection.target)?.data.infectious
       const isInfection = !sNodeInfectious && tNodeInfectious
 
-      const newEdge: Edge = { id: uuidv4(), source: connection.source, target: connection.target, data: { value: "0", kind: isInfection ? "Infection" : "Simple" }, type: 'custom-edge', 
+      const newEdge: FlowEdge = { id: uuidv4(), source: connection.source, target: connection.target, data: { value: 0, kind: isInfection ? "Infection" : "Simple" }, type: 'custom-edge', 
         markerEnd: {
           type: MarkerType.ArrowClosed,
           width: 20,
@@ -154,9 +158,9 @@ export default function Canvas() {
         </ReactFlow>
       </div>
       <div className='flex flex-col grow items-start overflow-y-auto'>
-        <Graph nodes={nodes} edges={edges} />
+        <Graph nodes={nodes} edges={edges} days={days} />
         <NodeCreate setNodes={setNodes} showModal={showModal} />
-        <Inspector nodes={nodes} edges={edges}/>
+        <Inspector nodes={nodes} edges={edges} days={days} setDays={setDays} />
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ type EditorToolbarProps = {
 
 export default function EditorToolbar({modelName, setModelName}: EditorToolbarProps) {
 
+  // Handle model name change
   function handleModelNameChange(e: ChangeEvent<HTMLInputElement, HTMLInputElement>) {
     setModelName(e.target.value);
   }
