@@ -5,12 +5,17 @@ export type CompartmentNode = Node<{
   name: string, symbol: string, value: number, infectious: boolean 
 }, 'custom-node'>;
 
-// Init compartment type colors
-const badgeColors: Record<string, string> = {
-  S: 'bg-blue-300 text-blue-950',
-  I: 'bg-red-300 text-red-950',
-  R: 'bg-emerald-300 text-emerald-950',
+// Symbol colors for compartments and graph lines
+export const compartmentColors: Record<string, { badge: string; line: string }> = {
+  S: { badge: 'bg-blue-300 text-blue-950', line: '#3b82f6' },
+  E: { badge: 'bg-amber-300 text-amber-950', line: '#f59e0b' },
+  I: { badge: 'bg-red-300 text-red-950', line: '#ef4444' },
+  R: { badge: 'bg-emerald-300 text-emerald-950', line: '#10b981' },
+  D: { badge: 'bg-gray-400 text-gray-950', line: '#6b7280' },
+  V: { badge: 'bg-violet-300 text-violet-950', line: '#8b5cf6' },
 };
+
+// Future feature: have user pick their own colors
 
 export default function CustomNode({ data, isConnectable, selected, id } : NodeProps<CompartmentNode>) {
   // Visual indication if node selected
@@ -19,7 +24,7 @@ export default function CustomNode({ data, isConnectable, selected, id } : NodeP
     : 'border-[#303238] hover:border-[#7a7d86] in-focus:border-[#5f6470]';
 
   // Assign colors for each compartment type
-  const badgeColor = badgeColors[data?.symbol] ?? 'bg-gray-300 text-gray-950';
+  const badgeColor = compartmentColors[data?.symbol].badge ?? 'bg-gray-300 text-gray-950';
 
   // Init hook to handle changes to node
   const reactFlow = useReactFlow();

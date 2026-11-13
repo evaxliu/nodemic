@@ -33,6 +33,9 @@ export default function NodeCreate({ setNodes, showModal } : NodeCreateProps) {
             <option value="S">S</option>
             <option value="I">I</option>
             <option value="R">R</option>
+            <option value="E">E</option>
+            <option value="V">V</option>
+            <option value="D">D</option>
           </select>
           <select name="Infectious" className='h-10 rounded-md border border-gray-300 px-3 text-gray-900 outline-none focus:border-gray-500' required>
             <option value="True">Infectious</option>
