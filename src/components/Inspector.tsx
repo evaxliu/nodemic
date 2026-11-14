@@ -11,10 +11,37 @@ export default function Inspector({nodes, edges, days, setDays} : InspectorProps
     idToName[node.id] = node.data.name
   }
 
+  const MAX_DAYS = 3650
+
+  function handleDaysChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = Number(e.target.value)
+
+    // Ignore empty, negative, or invalid input and keep the last valid days
+    if (!Number.isFinite(value) || value < 1) {
+      return
+    }
+
+    const wholeDays = Math.floor(value)
+    setDays(Math.min(wholeDays, MAX_DAYS))
+  }
+
+  function handleDaysBlur(e: React.FocusEvent<HTMLInputElement>) {
+    // Snap the displayed value back to the clamped days
+    e.target.value = String(days)
+  }
+
   return (
     <div className='p-4 m-5 border-t'>
       <p>Days</p>
-      <input type='number' defaultValue={days} onChange={(e) => setDays(Number(e.target.value))}/>
+      <input
+        type="number"
+        min={1}
+        max={MAX_DAYS}
+        step={1}
+        defaultValue={days}
+        onChange={handleDaysChange}
+        onBlur={handleDaysBlur}
+      />
       <div className='mt-3 grid grid-cols-2 gap-6'>
           <div className='flex flex-col gap-2'>
             <p>Compartments</p>

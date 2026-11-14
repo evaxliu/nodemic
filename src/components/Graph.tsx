@@ -4,6 +4,7 @@ import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'r
 import { compartmentColors, type CompartmentNode } from './CustomNode';
 import { type FlowEdge } from './CustomEdge';
 import { calculate } from '@/lib/model_equations';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 
 interface Props { nodes: CompartmentNode[], edges: FlowEdge[], days: number }
 
@@ -11,26 +12,27 @@ export type Compartment = { id: string; name: string; symbol: string; value: num
 type Flow = { from: string; to: string; rate: number; infection: 'Infection' | 'Simple' }
 
 export default function Graph({ nodes, edges, days } : Props) {
-  // Make node and edges string because string can still be equal even if rebuilt. Doesn't recompile like objects do when rebuilt.
-  // No recompile for every repositioning of compartment, performance im provement
-  const nodeSig = JSON.stringify(
-    nodes.map((n): Compartment => ({ id: n.id, name: n.data.name, symbol: n.data.symbol, value: n.data.value, infectious: n.data.infectious}))
-  )
-  const edgeSig = JSON.stringify(
-    edges
+  // Make nodes and edges string because string can still be equal even if rebuilt. Doesn't recompile like objects do when rebuilt.
+  // Performance Improvement: no recompile for every repositioning of compartment, and one string for debounce, no timer stack.
+  const inputKey = JSON.stringify({
+    nodes: nodes.map((n): Compartment => ({ id: n.id, name: n.data.name, symbol: n.data.symbol, value: n.data.value, infectious: n.data.infectious})),
+    edges: edges
       .filter((e) => e.data !== undefined)
-      .map((e): Flow => ({ from: e.source, to: e.target, rate: e.data!.value, infection: e.data!.kind}))
-  )
+      .map((e): Flow => ({ from: e.source, to: e.target, rate: e.data!.value, infection: e.data!.kind})),
+    days: days,
+  });
+  const debouncedKey = useDebouncedValue(inputKey, 300);
 
   // Compile data for equations to use
   const compiled = useMemo(() => {
+    const parsed: { nodes: Compartment[]; edges: Flow[]; days: number } = JSON.parse(debouncedKey);
     // [ {id: 'n1', name: 'Susceptible', symbol: 'S', value: 99995, infectious: false} ]
-    const storeNodes: Compartment[] = JSON.parse(nodeSig)
+    const storeNodes = parsed.nodes;
     // [ {from: 'n1', to: 'n2', rate: 0.3, infection: 'Infection'} ]
-    const storeEdges: Flow[] = JSON.parse(edgeSig)
+   const storeEdges = parsed.edges;
 
     // Init how many days the model displays
-    const d = days
+    const d = parsed.days;
     // Init how many steps are taken
     const dt = 0.1
 
@@ -47,7 +49,7 @@ export default function Graph({ nodes, edges, days } : Props) {
     }
 
     return {dt: dt, days: d, compartments: storeNodes, flowRates: flowRates }
-  }, [nodeSig, edgeSig, days])
+  }, [debouncedKey])
 
   const data = useMemo(() => {
     return calculate(compiled)
@@ -82,7 +84,7 @@ export default function Graph({ nodes, edges, days } : Props) {
         <XAxis
           dataKey="day"
           type="number"
-          domain={[0, days]}
+          domain={[0, compiled.days]}
           allowDataOverflow
           label={{ value: 'Time (Days)', position: 'bottom' }}
         />
