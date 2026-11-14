@@ -1,14 +1,6 @@
 // Euler
 
-type calculateProps = {
-  dt: number;
-  days: number;
-  cVals: number[];
-  cIdToIdx: Record<string, number>;
-  flowRates: { from: number, to: number, rate: number, infection: boolean }[];
-  infC: Set<number>;
-  cIdName: Record<string, string>;
-}
+import { Compartment } from '@/components/Graph';
 
 // Data will be in the form of Object
 // const sampleData = [
@@ -21,39 +13,52 @@ type calculateProps = {
 //   { day: 60, s: 10, i: 1, r: 600 },
 // ];
 
+type calculateProps = {
+  dt: number;
+  days: number;
+  compartments: Compartment[];
+  flowRates: {
+      from: number;
+      to: number;
+      rate: number;
+      infection: boolean;
+  }[];
+}
+
 export function calculate(compiled: calculateProps) {
   const flows = compiled.flowRates
-  const cIdToIdx = compiled.cIdToIdx
-  const cVals = [...compiled.cVals]
-  const infC = compiled.infC
-  const cIdName = compiled.cIdName
+  const comparts = compiled.compartments
+
+  // Current value of each compartment, same order as comparts.
+  // A separate array of numbers so the math never changes the compartment objects.
+  const values: number[] = []
+  for (let i = 0; i < comparts.length; i++) {
+    values.push(comparts[i].value)
+  }
 
   const data = []
-  data.push(initializeData(cIdName, cIdToIdx, cVals))
+  data.push(initializeData(comparts))
 
   // Calculate changes for each step - Euler
   for (let step = 0; step < compiled.days/compiled.dt; step++) {
-    // Calculate total population (sum of all compartments)
-    let N = 0
-    for (const val of cVals) {
-      N += val
-    }
-
-    // Calculate total infectious (sum of all infectious compartments)
-    // Infectious total = total of all infectious compartments
-    let infTotal = 0
-    for (let i = 0; i < cVals.length; i++) {
-      if (infC.has(i)) {
-        infTotal += cVals[i]
-      }
-    }
-
     // Calculate current day based on current step
     const day = (step + 1) * compiled.dt
 
+    // Calculate total population (sum of all compartments)
+    let N = 0
+    // Calculate total infectious (sum of all infectious compartments)
+    // Infectious total = total of all infectious compartments
+    let infTotal = 0
+    for (let i = 0; i < comparts.length; i++) {
+      N += values[i]
+      if (comparts[i].infectious) {
+        infTotal += values[i]
+      }
+    }
+
     // Changes to each compartment value
     // Changes subtract from source, add to target
-    const change = Array<number>(cVals.length).fill(0);
+    const change = Array<number>(comparts.length).fill(0);
 
     // S→I = 0.3 × 99,995 × (5 ÷ 100,000) ≈ 1.5
     // I→R = 0.1 × 5 = 0.5
@@ -74,32 +79,27 @@ export function calculate(compiled: calculateProps) {
         if (N > 0) {
           infShare = infTotal / N
         }
-        dCompartment = flows[i].rate * cVals[sIdx] * (infShare) * compiled.dt
+        dCompartment = flows[i].rate * values[sIdx] * (infShare) * compiled.dt
       } else {
-        dCompartment = flows[i].rate * cVals[sIdx] * compiled.dt
+        dCompartment = flows[i].rate * values[sIdx] * compiled.dt
       }
 
       // Changes subtract from source, add to target
       change[sIdx] -= dCompartment
       change[tIdx] += dCompartment
     }
-
+    
+    // Data row for graph
+    const row: Record<string, number> = { day: day }
+    
     // Apply changes to vals
     for (let i = 0; i < change.length; i++) {
-      cVals[i] += change[i]
+      values[i] += change[i]
+      row[comparts[i].name] = values[i]
     }
 
     // Only add data for full days, not partial days
     if ((step + 1) % Math.round(1 / compiled.dt) === 0) {
-      // Data row
-      const row: Record<string, number> = { day: day }
-
-      // Compartment id -> new compartment value
-      // Add to row to push to data for graphing
-      for (const k in cIdToIdx) {
-        const idx = cIdToIdx[k]
-        row[cIdName[k]] = cVals[idx]
-      }
       data.push(row)
     }
   }
@@ -107,11 +107,10 @@ export function calculate(compiled: calculateProps) {
   return data
 }
 
-function initializeData(cIdName: Record<string, string>, cIdToIdx: Record<string, number>, cVals: number[]) {
+function initializeData(comparts: Compartment[]) {
   const row: Record<string, number> = { day: 0 }
-  for (const k in cIdToIdx) {
-    const idx = cIdToIdx[k]
-    row[cIdName[k]] = cVals[idx]
+  for (let i = 0; i < comparts.length; i++) {
+    row[comparts[i].name] = comparts[i].value
   }
   return row
 }
