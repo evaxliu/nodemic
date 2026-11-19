@@ -60,7 +60,7 @@ export default function Graph({ nodes, edges, days } : Props) {
       <LineChart
         style={{ width: '100%', aspectRatio: 1.618, maxWidth: 500 }}
         responsive
-        data={data}
+        data={data.data}
         margin={{
           top: 20,
           right: 20,
@@ -122,6 +122,10 @@ export default function Graph({ nodes, edges, days } : Props) {
           }}
         />
       </LineChart>
+      <div className='px-10'>
+        <p>Day of Peak: {data.dayPeak}</p>
+        <p>Peak Infected: {data.peak}</p>
+      </div>
     </>
   );
 }

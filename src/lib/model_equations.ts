@@ -28,6 +28,8 @@ type calculateProps = {
 export function calculate(compiled: calculateProps) {
   const flows = compiled.flowRates
   const comparts = compiled.compartments
+  let peak = 0
+  let dayPeak = 0
 
   // Current value of each compartment, same order as comparts.
   // A separate array of numbers so the math never changes the compartment objects.
@@ -96,6 +98,10 @@ export function calculate(compiled: calculateProps) {
     for (let i = 0; i < change.length; i++) {
       values[i] += change[i]
       row[comparts[i].name] = values[i]
+      if (comparts[i].infectious == true && values[i] > peak) {
+        peak = values[i]
+        dayPeak = day
+      }
     }
 
     // Only add data for full days, not partial days
@@ -104,7 +110,7 @@ export function calculate(compiled: calculateProps) {
     }
   }
 
-  return data
+  return { data: data, peak: peak, dayPeak: dayPeak }
 }
 
 function initializeData(comparts: Compartment[]) {
